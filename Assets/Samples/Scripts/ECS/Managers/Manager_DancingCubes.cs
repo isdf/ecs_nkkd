@@ -1,13 +1,13 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using Unity.Collections;
 using Unity.Collections.LowLevel.Unsafe;
-using Unity.Transforms;
+using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Rendering;
-using Unity.Entities;
-using System;
+using Unity.Transforms;
+using UnityEngine;
 
 [RequireComponent(typeof(Camera))]
 public sealed class Manager_DancingCubes : MonoBehaviour
@@ -24,7 +24,7 @@ public sealed class Manager_DancingCubes : MonoBehaviour
 
     private void InitializeEntities(EntityManager manager)
     {
-        if (count == 0) return;
+        if (count == 0)return;
         var entities = new NativeArray<Entity>((int)count, Allocator.TempJob, NativeArrayOptions.UninitializedMemory);
         try
         {
@@ -33,7 +33,7 @@ public sealed class Manager_DancingCubes : MonoBehaviour
             manager.SetComponentData(entities[0], new StartTime { Value = Time.timeSinceLevelLoad });
             unsafe
             {
-                var rest = NativeArrayUnsafeUtility.ConvertExistingDataToNativeArray<Entity>(((Entity*)NativeArrayUnsafeUtility.GetUnsafePtr(entities)) + 1, entities.Length - 1, Allocator.Temp);
+                var rest = NativeArrayUnsafeUtility.ConvertExistingDataToNativeArray<Entity>(((Entity * )NativeArrayUnsafeUtility.GetUnsafePtr(entities)) + 1, entities.Length - 1, Allocator.Temp);
 #if ENABLE_UNITY_COLLECTIONS_CHECKS
                 NativeArrayUnsafeUtility.SetAtomicSafetyHandle(ref rest, NativeArrayUnsafeUtility.GetAtomicSafetyHandle(entities));
 #endif
@@ -67,7 +67,8 @@ public sealed class Manager_DancingCubes : MonoBehaviour
     private EntityManager InitializeWorld()
     {
         var worlds = new World[1];
-        ref var world = ref worlds[0];
+        ref
+        var world = ref worlds[0];
         world = new World("Dancing");
         var manager = world.CreateManager<EntityManager>();
         world.CreateManager(typeof(MoveSystem));

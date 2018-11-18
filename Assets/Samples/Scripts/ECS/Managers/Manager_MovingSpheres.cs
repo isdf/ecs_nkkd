@@ -1,10 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
-using Unity.Entities;
 using Unity.Collections;
+using Unity.Entities;
 using Unity.Rendering;
 using Unity.Transforms;
+using UnityEngine;
 
 [RequireComponent(typeof(Camera))]
 public sealed class Manager_MovingSpheres : MonoBehaviour
@@ -25,7 +25,7 @@ public sealed class Manager_MovingSpheres : MonoBehaviour
         var src = manager.CreateEntity(archetype);
         manager.SetSharedComponentData(src, new MeshInstanceRendererInstancedIndirectSystem.MeshInstanceRendererIndex(1u));
         Set(src);
-        using (var _ = new NativeArray<Entity>(11450, Allocator.Temp, NativeArrayOptions.UninitializedMemory))
+        using(var _ = new NativeArray<Entity>(11450, Allocator.Temp, NativeArrayOptions.UninitializedMemory))
         {
             manager.Instantiate(src, _);
             for (int i = 0; i < _.Length; i++)
@@ -35,7 +35,7 @@ public sealed class Manager_MovingSpheres : MonoBehaviour
     EntityManager manager;
     EntityArchetype archetype;
 
-    private void Set(in Entity e)
+    private void Set( in Entity e)
     {
         manager.SetComponentData(e, new Position { Value = new Unity.Mathematics.float3((Random.value - 0.5f) * 40, (Random.value - 0.5f) * 40, (Random.value - 0.5f) * 40) });
         manager.SetComponentData(e, new Velocity { Value = new Unity.Mathematics.float3((Random.value - 0.5f), (Random.value - 0.5f), (Random.value - 0.5f)) });
