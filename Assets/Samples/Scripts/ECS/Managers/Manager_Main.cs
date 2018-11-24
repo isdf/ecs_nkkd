@@ -24,20 +24,12 @@ namespace NKKD
     /// </summary>
     sealed class Manager_Main : MonoBehaviour
     {
-
         // ワールドとシーン名を一致させる
         const string SCENE_NAME = "Main";
 
-        const int ARINUM = 10;
+        // エンティティリスト
+        List<Entity> m_playerEntityList = new List<Entity>();
 
-        // // エンティティリスト
-        // List<Entity> m_entityList;
-        // // エンティティマネージャー
-        // EntityManager entityManager;
-        // [SerializeField] MeshInstanceRenderer meshInstanceRenderer;
-        // [SerializeField] uint count;
-        // [SerializeField] uint2 range;
-        // [SerializeField] uint danceLoopLength;
         void Start()
         {
             //シーンの判定
@@ -96,9 +88,13 @@ namespace NKKD
             // world.CreateManager(typeof(EndFrameTransformSystem));
             // world.CreateManager<MeshInstanceRendererSystem>().ActiveCamera = GetComponent<Camera>();
 
+            //Player
+            //Chara
+            world.CreateManager(typeof(PadInputSystem));
             world.CreateManager(typeof(BehaveMoveSystem));
             world.CreateManager(typeof(ChangeBehaveSystem));
             world.CreateManager(typeof(MotionCountSystem));
+            //Renderer
             world.CreateManager(typeof(CharaDrawSystem));
 
         }
@@ -133,7 +129,9 @@ namespace NKKD
         /// <param name="manager"></param>
         void InitializeEntities(EntityManager manager)
         {
-            //アリ作成
+            // プレーヤー作成
+            // CreatePlayerEntity(manager);
+            // キャラ作成
             CreateCharaEntity(manager);
 
             //             if (count == 0)
@@ -167,14 +165,33 @@ namespace NKKD
             //             }
         }
 
-        //アリエンティティ作成
+        /// <summary>
+        /// プレーヤーエンティティ作成
+        /// </summary>
+        /// <param name="manager"></param>
+        // void CreatePlayerEntity(EntityManager manager)
+        // {
+        //     for (int i = 0; i < Define.Instance.PLAYER_NUM; i++)
+        //     {
+        //         var entity = PlayerEntityFactory.CreateEntity(i, manager);
+        //         // m_playerEntityList.Add(entity);
+        //     }
+        // }
+
+        /// <summary>
+        /// キャラエンティティ作成
+        /// </summary>
+        /// <param name="manager"></param>
         void CreateCharaEntity(EntityManager manager)
         {
             //アリエンティティ作成
-            for (int i = 0; i < ARINUM; i++)
+            for (int i = 0; i < Define.Instance.CAHAR_NUM; i++)
             {
-                var entity = CharaEntityFactory.CreateEntity(i, manager,
-                    ref Shared.ariMeshMat, ref Shared.aniScriptSheet, ref Shared.aniBasePos);
+                // var playerEntity = (i < m_playerEntityList.Count)
+                //     ? m_playerEntityList[i]
+                //     : Entity.Null;
+
+                var entity = CharaEntityFactory.CreateEntity(i, manager, ref Shared.ariMeshMat, ref Shared.aniScriptSheet, ref Shared.aniBasePos);
                 //エンティティリストに追加
                 // entityList.Add(entity);
             }

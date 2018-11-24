@@ -3,9 +3,22 @@ using Unity.Transforms;
 
 public static class ComponentTypes
 {
-	//アリ
+	/// <summary>
+	/// プレーヤー
+	/// </summary>
+	/// <value></value>
+	public static ComponentType[] PlayerComponentType = {
+		typeof(PlayerTag), //プレイヤータグ
+		typeof(PlayerId), //プレイヤーId
+		typeof(PadInput), //入力
+	};
+	/// <summary>
+	/// キャラ
+	/// </summary>
+	/// <value></value>
 	public static ComponentType[] CharaComponentType = {
-		typeof(CharaTag), //蟻
+		typeof(CharaTag), //キャラタグ
+		// typeof(PadInput), //入力
 		typeof(Position), //位置
 		typeof(CharaId), //ID
 		typeof(CharaBehave), //蟻行動タイプ

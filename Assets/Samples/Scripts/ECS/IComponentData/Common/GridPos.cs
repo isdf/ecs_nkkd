@@ -1,8 +1,10 @@
 using Unity.Entities;
 using UnityEngine;
 
-//チップの座標
+/// <summary>
+/// チップの座標（XYZ）
+/// </summary>
 public struct GridPos : IComponentData
 {
-    public Vector2Int Value;
+    public Vector3Int Value;
 }

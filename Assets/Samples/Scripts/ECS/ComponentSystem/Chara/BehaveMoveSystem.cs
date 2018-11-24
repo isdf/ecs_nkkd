@@ -1,4 +1,5 @@
-﻿using Unity.Entities;
+﻿using Unity.Burst;
+using Unity.Entities;
 using Unity.Jobs;
 using Unity.Mathematics;
 using Unity.Transforms;
@@ -10,7 +11,7 @@ namespace NKKD
 	//座標移動
 	public class BehaveMoveSystem : JobComponentSystem
 	{
-		[ComputeJobOptimization]
+		[BurstCompileAttribute]
 		struct PositionJob : IJobProcessComponentData<Position, CharaBehave>
 		{
 			public float deltaTime;
