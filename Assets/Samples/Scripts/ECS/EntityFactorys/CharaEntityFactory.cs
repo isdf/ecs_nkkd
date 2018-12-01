@@ -56,10 +56,17 @@ namespace NKKD
 					myId = _i,
 			});
 
+			// //位置
+			// _entityManager.SetComponentData(entity, new Position
+			// {
+			// 	Value = new float3(UnityEngine.Random.Range(posL, posH), UnityEngine.Random.Range(posL, posH), 0)
+			// });
+
 			//位置
-			_entityManager.SetComponentData(entity, new Position
+			_entityManager.SetComponentData(entity, new CharaMove
 			{
-				Value = new float3(UnityEngine.Random.Range(posL, posH), UnityEngine.Random.Range(posL, posH), 0)
+				position = new Vector3Int(UnityEngine.Random.Range(posL, posH), UnityEngine.Random.Range(posL, posH), 0),
+					delta = Vector3Int.zero
 			});
 
 			//モーション
@@ -75,13 +82,13 @@ namespace NKKD
 					// dashMuki = EnumMuki.None,
 			});
 
-			//行動
-			_entityManager.SetComponentData(entity, new CharaBehave
-			{
-				behaveType = 0,
-					angle = (int)UnityEngine.Random.Range(0, 11),
-					endTime = (Time.realtimeSinceStartup + 0.5f + UnityEngine.Random.value)
-			});
+			// //行動
+			// _entityManager.SetComponentData(entity, new CharaBehave
+			// {
+			// 	behaveType = 0,
+			// 		angle = (int)UnityEngine.Random.Range(0, 11),
+			// 		endTime = (Time.realtimeSinceStartup + 0.5f + UnityEngine.Random.value)
+			// });
 
 			//見た目
 			_entityManager.SetComponentData(entity, new CharaLook

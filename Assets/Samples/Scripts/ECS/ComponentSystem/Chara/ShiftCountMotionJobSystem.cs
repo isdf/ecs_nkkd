@@ -31,7 +31,9 @@ namespace NKKD
 			{
 				m_charaMotions = m_group.GetComponentDataArray<CharaMotion>()
 			};
-			return job.Schedule(inputDeps);
+			inputDeps = job.Schedule(inputDeps);
+			inputDeps.Complete();
+			return inputDeps;
 		}
 
 		[BurstCompileAttribute]

@@ -93,7 +93,6 @@ namespace NKKD
 
             //入力システム
             world.CreateManager(typeof(PadInputSystem));
-            world.CreateManager(typeof(BehaveMoveSystem));
             //モーションの時間進行システム
             world.CreateManager(typeof(CountMotionJobSystem));
             //時間経過によるモーション変更システム
@@ -104,6 +103,12 @@ namespace NKKD
             //入力による向き変化システム
             world.CreateManager(typeof(InputMukiSystem));
             // world.CreateManager(typeof(MotionCountSystem));
+            //座標移動システム
+            world.CreateManager(typeof(MovePosJobSystem));
+            //描画向き変換
+            world.CreateManager(typeof(LookJobSystem));
+            //描画座標変換システム
+            world.CreateManager(typeof(ConvertDrawPosJobSystem));
             //Renderer
             //各パーツの描画位置決定および描画
             world.CreateManager(typeof(CharaDrawSystem));

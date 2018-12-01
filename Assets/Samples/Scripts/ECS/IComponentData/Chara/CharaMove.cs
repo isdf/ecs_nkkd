@@ -7,6 +7,7 @@ namespace NKKD
 	/// </summary>
 	public struct CharaMove : IComponentData
 	{
+		public Vector3Int position;
 		public Vector3Int delta;
 
 		// XZ方向減速
@@ -40,6 +41,11 @@ namespace NKKD
 		{
 			delta.x = 0;
 			delta.z = 0;
+		}
+
+		public void Move()
+		{
+			position += delta;
 		}
 
 	}

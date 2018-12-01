@@ -11,23 +11,167 @@ namespace NKKD
 
 	//各パーツの描画位置決定および描画
 	[UpdateAfter(typeof(PreLateUpdate.ParticleSystemBeginUpdateAll))]
-	public class CharaDrawSystem : ComponentSystem
+	public class CharaDrawSystem : JobComponentSystem
 	{
+		ComponentGroup group;
 
-		struct Group
+		protected override void OnCreateManager()
 		{
-			public readonly int Length;
-			public EntityArray entities;
-			[ReadOnly] public ComponentDataArray<Position> position;
-			[ReadOnly] public ComponentDataArray<CharaLook> look;
-			[ReadOnly] public ComponentDataArray<CharaMotion> motion;
-			[ReadOnly] public ComponentDataArray<CharaTag> tag;
-			[ReadOnly] public SharedComponentDataArray<AniBasePos> aniBasePos;
-			[ReadOnly] public SharedComponentDataArray<AniScriptSheet> aniScriptSheet;
-			[ReadOnly] public SharedComponentDataArray<MeshMatList> ariMeshMat;
+			group = GetComponentGroup(
+				ComponentType.ReadOnly<Position>(),
+				ComponentType.ReadOnly<CharaMuki>(),
+				ComponentType.ReadOnly<CharaLook>(),
+				ComponentType.ReadOnly<CharaMotion>()
+			);
 		}
 
-		[Inject] Group group;
+		protected override JobHandle OnUpdate(JobHandle inputDeps)
+		{
+			var positions = group.GetComponentDataArray<Position>();
+			var charaMukis = group.GetComponentDataArray<CharaMuki>();
+			var charaLooks = group.GetComponentDataArray<CharaLook>();
+			var charaMotions = group.GetComponentDataArray<CharaMotion>();
+			var length = charaMotions.Length;
+
+			var isInCamera = new NativeArray<int>(length, Allocator.TempJob);
+			var lrQuaternion = new NativeArray<Quaternion>(2, Allocator.TempJob);
+			var position = new NativeArray<Position>(length, Allocator.TempJob);
+			var look = new NativeArray<CharaLook>(length, Allocator.TempJob);
+			var motion = new NativeArray<CharaMotion>(length, Allocator.TempJob);
+			var frame = new NativeArray<AniFrame>(length, Allocator.TempJob);
+
+			lrQuaternion[0] = Quaternion.Euler(new Vector3(-90, 0, 180));
+			lrQuaternion[1] = Quaternion.Euler(new Vector3(-90, 0, 0));
+			positions.CopyTo(position);
+			charaLooks.CopyTo(look);
+			charaMotions.CopyTo(motion);
+
+			for (int i = 0; i < length; i++)
+			{
+				frame[i] = Shared.aniScriptSheet.scripts[(int)motion[i].motionType].frames[motion[i].count >> 2];
+			}
+
+			float cameraW = Cache.pixelPerfectCamera.refResolutionX >> 1;
+			float cameraH = (cameraW * 0.75f);
+			var jobCulling = new JobCulling()
+			{
+				isInCamera = isInCamera,
+					position = position,
+					cameraXMax = Camera.main.transform.position.x + cameraW,
+					cameraXMin = Camera.main.transform.position.x - cameraW,
+					cameraYMax = Camera.main.transform.position.y + cameraH,
+					cameraYMin = Camera.main.transform.position.y - cameraH,
+					entitiesLength = length,
+			};
+
+			inputDeps = jobCulling.Schedule(length, 64, inputDeps);
+			// inputDeps.Complete();
+
+			var jobBody = new JobBody()
+			{
+				thoraxMatrix = new NativeArray<Matrix4x4>(length, Allocator.TempJob),
+					gasterMatrix = new NativeArray<Matrix4x4>(length, Allocator.TempJob),
+					leftArmMatrix = new NativeArray<Matrix4x4>(length, Allocator.TempJob),
+					rightArmMatrix = new NativeArray<Matrix4x4>(length, Allocator.TempJob),
+					leftLegMatrix = new NativeArray<Matrix4x4>(length, Allocator.TempJob),
+					rightLegMatrix = new NativeArray<Matrix4x4>(length, Allocator.TempJob),
+					isInCamera = isInCamera,
+					matrixLength = 0,
+					position = position,
+					look = look,
+					motion = motion,
+					aniBasePos = Shared.aniBasePos,
+					frame = frame,
+					lrQuaternion = lrQuaternion,
+					entitiesLength = length,
+					one = Vector3.one,
+			};
+			//var jobHandle = job.Schedule(length, 50);
+			inputDeps = jobBody.Schedule(inputDeps);
+
+			const int HEADNUM = 2;
+			var jobAntHead = new JobAntHead()
+			{
+				antMatrix = new NativeArray<Matrix4x4>(length, Allocator.TempJob),
+					antMatrix2 = new NativeArray<Matrix4x4>(length, Allocator.TempJob),
+					headMatrix = new NativeArray<Matrix4x4>(length, Allocator.TempJob),
+					headMatrix2 = new NativeArray<Matrix4x4>(length, Allocator.TempJob),
+					matrixLength = new NativeArray<int>(HEADNUM, Allocator.TempJob),
+					isInCamera = isInCamera,
+					position = position,
+					look = look,
+					motion = motion,
+					aniBasePos = Shared.aniBasePos,
+					frame = frame,
+					lrQuaternion = lrQuaternion,
+					entitiesLength = length,
+					one = Vector3.one,
+			};
+			inputDeps = jobAntHead.Schedule(inputDeps);
+			inputDeps.Complete();
+			// jobBodyHandle.Complete();
+			// jobAntHeadHandle.Complete();
+
+			//DrawMeshInstancedだとZソートがかからない（最初に描画されたやつに引っ張られてる？）
+			//体
+			for (int i = 0; i < jobBody.thoraxMatrix.Length; i++)
+			{
+				var framesCount = Shared.ariMeshMat;
+
+				Graphics.DrawMesh(Shared.ariMeshMat.meshs[0], jobBody.thoraxMatrix[i],
+					Shared.ariMeshMat.materials[0], 0);
+				Graphics.DrawMesh(Shared.ariMeshMat.meshs[1], jobBody.leftArmMatrix[i],
+					Shared.ariMeshMat.materials[1], 0);
+				Graphics.DrawMesh(Shared.ariMeshMat.meshs[1], jobBody.rightArmMatrix[i],
+					Shared.ariMeshMat.materials[1], 0);
+				Graphics.DrawMesh(Shared.ariMeshMat.meshs[2], jobBody.leftLegMatrix[i],
+					Shared.ariMeshMat.materials[2], 0);
+				Graphics.DrawMesh(Shared.ariMeshMat.meshs[2], jobBody.rightLegMatrix[i],
+					Shared.ariMeshMat.materials[2], 0);
+				//Graphics.DrawMesh(Shared.ariMeshMat.meshs[3], jobBody.gasterMatrix[i],
+				//	Shared.ariMeshMat.materials[3], 0);
+			}
+
+			//頭
+			for (int i = 0; i < jobAntHead.matrixLength[0]; i++)
+			{
+				//Graphics.DrawMesh(Shared.ariMeshMat.meshs[4], jobAntHead.antMatrix[i],
+				//	Shared.ariMeshMat.materials[4], 0);
+				Graphics.DrawMesh(Shared.ariMeshMat.meshs[5], jobAntHead.headMatrix[i],
+					Shared.ariMeshMat.materials[5], 0);
+			}
+			for (int i = 0; i < jobAntHead.matrixLength[1]; i++)
+			{
+				//Graphics.DrawMesh(Shared.ariMeshMat.meshs[6], jobAntHead.antMatrix2[i],
+				//	Shared.ariMeshMat.materials[6], 0);
+				Graphics.DrawMesh(Shared.ariMeshMat.meshs[7], jobAntHead.headMatrix2[i],
+					Shared.ariMeshMat.materials[7], 0);
+			}
+
+			//NativeArrayの開放
+
+			jobBody.thoraxMatrix.Dispose();
+			jobBody.gasterMatrix.Dispose();
+			jobBody.leftArmMatrix.Dispose();
+			jobBody.rightArmMatrix.Dispose();
+			jobBody.leftLegMatrix.Dispose();
+			jobBody.rightLegMatrix.Dispose();
+
+			jobAntHead.antMatrix.Dispose();
+			jobAntHead.antMatrix2.Dispose();
+			jobAntHead.headMatrix.Dispose();
+			jobAntHead.headMatrix2.Dispose();
+			jobAntHead.matrixLength.Dispose();
+
+			lrQuaternion.Dispose();
+			position.Dispose();
+			look.Dispose();
+			motion.Dispose();
+			frame.Dispose();
+			isInCamera.Dispose();
+
+			return inputDeps;
+		}
 
 		//カリング
 		[BurstCompileAttribute]
@@ -297,177 +441,38 @@ namespace NKKD
 			}
 		}
 
-		protected override void OnUpdate()
-		{
-
-			NativeArray<int> isInCamera = new NativeArray<int>(group.Length, Allocator.TempJob);
-			NativeArray<Quaternion> lrQuaternion = new NativeArray<Quaternion>(2, Allocator.TempJob);
-			lrQuaternion[0] = Quaternion.Euler(new Vector3(-90, 0, 180));
-			lrQuaternion[1] = Quaternion.Euler(new Vector3(-90, 0, 0));
-
-			//var entityManager = World.Active.GetOrCreateManager<EntityManager>();
-
-			var position = new NativeArray<Position>(group.Length, Allocator.TempJob);
-			group.position.CopyTo(position);
-			var look = new NativeArray<CharaLook>(group.Length, Allocator.TempJob);
-			group.look.CopyTo(look);
-			var motion = new NativeArray<CharaMotion>(group.Length, Allocator.TempJob);
-			group.motion.CopyTo(motion);
-			var frame = new NativeArray<AniFrame>(group.Length, Allocator.TempJob);
-			for (int i = 0; i < group.Length; i++)
-			{
-				frame[i] = Shared.aniScriptSheet.scripts[(int)motion[i].motionType].frames[motion[i].count >> 2];
-			}
-
-			float cameraW = Cache.pixelPerfectCamera.refResolutionX >> 1;
-			float cameraH = (cameraW * 0.75f);
-			var jobCulling = new JobCulling()
-			{
-				isInCamera = isInCamera,
-					position = position,
-					cameraXMax = Camera.main.transform.position.x + cameraW,
-					cameraXMin = Camera.main.transform.position.x - cameraW,
-					cameraYMax = Camera.main.transform.position.y + cameraH,
-					cameraYMin = Camera.main.transform.position.y - cameraH,
-					entitiesLength = group.entities.Length,
-			};
-
-			var jobHandleCulling = jobCulling.Schedule(group.Length, 64);
-			jobHandleCulling.Complete();
-
-			var jobBody = new JobBody()
-			{
-				thoraxMatrix = new NativeArray<Matrix4x4>(group.Length, Allocator.TempJob),
-					gasterMatrix = new NativeArray<Matrix4x4>(group.Length, Allocator.TempJob),
-					leftArmMatrix = new NativeArray<Matrix4x4>(group.Length, Allocator.TempJob),
-					rightArmMatrix = new NativeArray<Matrix4x4>(group.Length, Allocator.TempJob),
-					leftLegMatrix = new NativeArray<Matrix4x4>(group.Length, Allocator.TempJob),
-					rightLegMatrix = new NativeArray<Matrix4x4>(group.Length, Allocator.TempJob),
-					isInCamera = isInCamera,
-					matrixLength = 0,
-					position = position,
-					look = look,
-					motion = motion,
-					aniBasePos = Shared.aniBasePos,
-					frame = frame,
-					lrQuaternion = lrQuaternion,
-					entitiesLength = group.entities.Length,
-					one = Vector3.one,
-			};
-			//var jobHandle = job.Schedule(group.Length, 50);
-			var jobBodyHandle = jobBody.Schedule();
-
-			const int HEADNUM = 2;
-			var jobAntHead = new JobAntHead()
-			{
-				antMatrix = new NativeArray<Matrix4x4>(group.Length, Allocator.TempJob),
-					antMatrix2 = new NativeArray<Matrix4x4>(group.Length, Allocator.TempJob),
-					headMatrix = new NativeArray<Matrix4x4>(group.Length, Allocator.TempJob),
-					headMatrix2 = new NativeArray<Matrix4x4>(group.Length, Allocator.TempJob),
-					matrixLength = new NativeArray<int>(HEADNUM, Allocator.TempJob),
-					isInCamera = isInCamera,
-					position = position,
-					look = look,
-					motion = motion,
-					aniBasePos = Shared.aniBasePos,
-					frame = frame,
-					lrQuaternion = lrQuaternion,
-					entitiesLength = group.entities.Length,
-					one = Vector3.one,
-			};
-			var jobAntHeadHandle = jobAntHead.Schedule();
-
-			jobBodyHandle.Complete();
-			jobAntHeadHandle.Complete();
-
-			//DrawMeshInstancedだとZソートがかからない（最初に描画されたやつに引っ張られてる？）
-			//体
-			for (int i = 0; i < jobBody.thoraxMatrix.Length; i++)
-			{
-				Graphics.DrawMesh(group.ariMeshMat[0].meshs[0], jobBody.thoraxMatrix[i],
-					group.ariMeshMat[0].materials[0], 0);
-				Graphics.DrawMesh(group.ariMeshMat[0].meshs[1], jobBody.leftArmMatrix[i],
-					group.ariMeshMat[0].materials[1], 0);
-				Graphics.DrawMesh(group.ariMeshMat[0].meshs[1], jobBody.rightArmMatrix[i],
-					group.ariMeshMat[0].materials[1], 0);
-				Graphics.DrawMesh(group.ariMeshMat[0].meshs[2], jobBody.leftLegMatrix[i],
-					group.ariMeshMat[0].materials[2], 0);
-				Graphics.DrawMesh(group.ariMeshMat[0].meshs[2], jobBody.rightLegMatrix[i],
-					group.ariMeshMat[0].materials[2], 0);
-				//Graphics.DrawMesh(group.ariMeshMat[0].meshs[3], jobBody.gasterMatrix[i],
-				//	group.ariMeshMat[0].materials[3], 0);
-			}
-
-			//頭
-			for (int i = 0; i < jobAntHead.matrixLength[0]; i++)
-			{
-				//Graphics.DrawMesh(group.ariMeshMat[0].meshs[4], jobAntHead.antMatrix[i],
-				//	group.ariMeshMat[0].materials[4], 0);
-				Graphics.DrawMesh(group.ariMeshMat[0].meshs[5], jobAntHead.headMatrix[i],
-					group.ariMeshMat[0].materials[5], 0);
-			}
-			for (int i = 0; i < jobAntHead.matrixLength[1]; i++)
-			{
-				//Graphics.DrawMesh(group.ariMeshMat[0].meshs[6], jobAntHead.antMatrix2[i],
-				//	group.ariMeshMat[0].materials[6], 0);
-				Graphics.DrawMesh(group.ariMeshMat[0].meshs[7], jobAntHead.headMatrix2[i],
-					group.ariMeshMat[0].materials[7], 0);
-			}
-
-			//NativeArrayの開放
-
-			jobBody.thoraxMatrix.Dispose();
-			jobBody.gasterMatrix.Dispose();
-			jobBody.leftArmMatrix.Dispose();
-			jobBody.rightArmMatrix.Dispose();
-			jobBody.leftLegMatrix.Dispose();
-			jobBody.rightLegMatrix.Dispose();
-
-			jobAntHead.antMatrix.Dispose();
-			jobAntHead.antMatrix2.Dispose();
-			jobAntHead.headMatrix.Dispose();
-			jobAntHead.headMatrix2.Dispose();
-			jobAntHead.matrixLength.Dispose();
-
-			lrQuaternion.Dispose();
-			position.Dispose();
-			look.Dispose();
-			motion.Dispose();
-			frame.Dispose();
-			isInCamera.Dispose();
-		}
 	}
 }
 
 ////胸
-//Graphics.DrawMeshInstanced(group.ariMeshMat[0].meshs[0], 0,
-//	group.ariMeshMat[0].materials[0], job.thoraxMatrix.ToArray(), job.thoraxMatrix.Length);
+//Graphics.DrawMeshInstanced(Shared.ariMeshMat.meshs[0], 0,
+//	Shared.ariMeshMat.materials[0], job.thoraxMatrix.ToArray(), job.thoraxMatrix.Length);
 ////腕
-//Graphics.DrawMeshInstanced(group.ariMeshMat[0].meshs[1], 0,
-//	group.ariMeshMat[0].materials[1], job.leftArmMatrix.ToArray(), job.leftArmMatrix.Length);
-//Graphics.DrawMeshInstanced(group.ariMeshMat[0].meshs[1], 0,
-//	group.ariMeshMat[0].materials[1], job.rightArmMatrix.ToArray(), job.rightArmMatrix.Length);
+//Graphics.DrawMeshInstanced(Shared.ariMeshMat.meshs[1], 0,
+//	Shared.ariMeshMat.materials[1], job.leftArmMatrix.ToArray(), job.leftArmMatrix.Length);
+//Graphics.DrawMeshInstanced(Shared.ariMeshMat.meshs[1], 0,
+//	Shared.ariMeshMat.materials[1], job.rightArmMatrix.ToArray(), job.rightArmMatrix.Length);
 ////足
-//Graphics.DrawMeshInstanced(group.ariMeshMat[0].meshs[2], 0,
-//	group.ariMeshMat[0].materials[2], job.leftLegMatrix.ToArray(), job.leftLegMatrix.Length);
-//Graphics.DrawMeshInstanced(group.ariMeshMat[0].meshs[2], 0,
-//	group.ariMeshMat[0].materials[2], job.rightLegMatrix.ToArray(), job.rightLegMatrix.Length);
+//Graphics.DrawMeshInstanced(Shared.ariMeshMat.meshs[2], 0,
+//	Shared.ariMeshMat.materials[2], job.leftLegMatrix.ToArray(), job.leftLegMatrix.Length);
+//Graphics.DrawMeshInstanced(Shared.ariMeshMat.meshs[2], 0,
+//	Shared.ariMeshMat.materials[2], job.rightLegMatrix.ToArray(), job.rightLegMatrix.Length);
 
 ////腹
-//Graphics.DrawMeshInstanced(group.ariMeshMat[0].meshs[3], 0,
-//	group.ariMeshMat[0].materials[3], jobGaster.gasterMatrix.ToArray(), jobGaster.matrixLength[0]);
+//Graphics.DrawMeshInstanced(Shared.ariMeshMat.meshs[3], 0,
+//	Shared.ariMeshMat.materials[3], jobGaster.gasterMatrix.ToArray(), jobGaster.matrixLength[0]);
 ////腹
-//Graphics.DrawMeshInstanced(group.ariMeshMat[0].meshs[4], 0,
-//	group.ariMeshMat[0].materials[4], jobGaster.gasterMatrix2.ToArray(), jobGaster.matrixLength[1]);
+//Graphics.DrawMeshInstanced(Shared.ariMeshMat.meshs[4], 0,
+//	Shared.ariMeshMat.materials[4], jobGaster.gasterMatrix2.ToArray(), jobGaster.matrixLength[1]);
 
 ////アンテナと顔
-//Graphics.DrawMeshInstanced(group.ariMeshMat[0].meshs[6], 0,
-//	group.ariMeshMat[0].materials[6], jobAntHead.antMatrix.ToArray(), jobAntHead.matrixLength[0]);
-//Graphics.DrawMeshInstanced(group.ariMeshMat[0].meshs[7], 0,
-//	group.ariMeshMat[0].materials[7], jobAntHead.headMatrix.ToArray(), jobAntHead.matrixLength[0]);
+//Graphics.DrawMeshInstanced(Shared.ariMeshMat.meshs[6], 0,
+//	Shared.ariMeshMat.materials[6], jobAntHead.antMatrix.ToArray(), jobAntHead.matrixLength[0]);
+//Graphics.DrawMeshInstanced(Shared.ariMeshMat.meshs[7], 0,
+//	Shared.ariMeshMat.materials[7], jobAntHead.headMatrix.ToArray(), jobAntHead.matrixLength[0]);
 
 ////アンテナと顔
-//Graphics.DrawMeshInstanced(group.ariMeshMat[0].meshs[8], 0,
-//	group.ariMeshMat[0].materials[8], jobAntHead.antMatrix2.ToArray(), jobAntHead.matrixLength[1]);
-//Graphics.DrawMeshInstanced(group.ariMeshMat[0].meshs[9], 0,
-//	group.ariMeshMat[0].materials[9], jobAntHead.headMatrix2.ToArray(), jobAntHead.matrixLength[1]);
+//Graphics.DrawMeshInstanced(Shared.ariMeshMat.meshs[8], 0,
+//	Shared.ariMeshMat.materials[8], jobAntHead.antMatrix2.ToArray(), jobAntHead.matrixLength[1]);
+//Graphics.DrawMeshInstanced(Shared.ariMeshMat.meshs[9], 0,
+//	Shared.ariMeshMat.materials[9], jobAntHead.headMatrix2.ToArray(), jobAntHead.matrixLength[1]);

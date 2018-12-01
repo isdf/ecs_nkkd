@@ -36,6 +36,7 @@ namespace NKKD
 			};
 
 			inputDeps = job.Schedule(inputDeps);
+			inputDeps.Complete();
 			return inputDeps;
 		}
 
