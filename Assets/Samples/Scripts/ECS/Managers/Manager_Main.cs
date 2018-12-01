@@ -90,11 +90,22 @@ namespace NKKD
 
             //Player
             //Chara
+
+            //入力システム
             world.CreateManager(typeof(PadInputSystem));
             world.CreateManager(typeof(BehaveMoveSystem));
-            world.CreateManager(typeof(ChangeBehaveSystem));
-            world.CreateManager(typeof(MotionCountSystem));
+            //モーションの時間進行システム
+            world.CreateManager(typeof(CountMotionJobSystem));
+            //時間経過によるモーション変更システム
+            world.CreateManager(typeof(ShiftCountMotionJobSystem));
+            //入力による状態変化システム
+            // world.CreateManager(typeof(InputMotionSystem));
+            world.CreateManager(typeof(InputMotionJobSystem));
+            //入力による向き変化システム
+            world.CreateManager(typeof(InputMukiSystem));
+            // world.CreateManager(typeof(MotionCountSystem));
             //Renderer
+            //各パーツの描画位置決定および描画
             world.CreateManager(typeof(CharaDrawSystem));
 
         }
@@ -133,36 +144,6 @@ namespace NKKD
             // CreatePlayerEntity(manager);
             // キャラ作成
             CreateCharaEntity(manager);
-
-            //             if (count == 0)
-            //                 return;
-            //             var entities = new NativeArray<Entity>((int)count, Allocator.TempJob, NativeArrayOptions.UninitializedMemory);
-            //             try
-            //             {
-            //                 entities[0] = manager.CreateEntity(ComponentType.Create<Position>(),
-            //                     ComponentType.Create<MeshInstanceRenderer>(),
-            //                     ComponentType.Create<StartTime>(),
-            //                     ComponentType.Create<Velocity>(),
-            //                     ComponentType.Create<DanceMove>(),
-            //                     ComponentType.Create<DanceSystem.Tag>());
-            //                 manager.SetSharedComponentData(entities[0], meshInstanceRenderer);
-            //                 manager.SetComponentData(entities[0], new StartTime { Value = Time.timeSinceLevelLoad });
-            //                 unsafe
-            //                 {
-            //                     var rest = NativeArrayUnsafeUtility.ConvertExistingDataToNativeArray<Entity>(((Entity * )NativeArrayUnsafeUtility.GetUnsafePtr(entities)) + 1, entities.Length - 1, Allocator.Temp);
-            // #if ENABLE_UNITY_COLLECTIONS_CHECKS
-            //                     NativeArrayUnsafeUtility.SetAtomicSafetyHandle(ref rest, NativeArrayUnsafeUtility.GetAtomicSafetyHandle(entities));
-            // #endif
-            //                     manager.Instantiate(entities[0], rest);
-            //                 }
-            //                 var rand = new Unity.Mathematics.Random((uint)DateTime.Now.Ticks);
-            //                 for (int i = 0; i < entities.Length; i++)
-            //                     InitializeEntity(ref rand, manager, entities[i]);
-            //             }
-            //             finally
-            //             {
-            //                 entities.Dispose();
-            //             }
         }
 
         /// <summary>

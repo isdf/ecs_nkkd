@@ -1,4 +1,5 @@
-﻿using Unity.Collections;
+﻿using Unity.Burst;
+using Unity.Collections;
 using Unity.Entities;
 using Unity.Jobs;
 using Unity.Transforms;
@@ -29,7 +30,7 @@ namespace NKKD
 		[Inject] Group group;
 
 		//カリング
-		[ComputeJobOptimization]
+		[BurstCompileAttribute]
 		struct JobCulling : IJobParallelFor
 		{
 			public NativeArray<int> isInCamera;
@@ -67,7 +68,7 @@ namespace NKKD
 		}
 
 		//胸手足位置
-		[ComputeJobOptimization]
+		[BurstCompileAttribute]
 		struct JobBody : IJob
 		{
 			public NativeArray<Matrix4x4> thoraxMatrix;
@@ -211,7 +212,7 @@ namespace NKKD
 		}
 
 		//触角頭位置
-		[ComputeJobOptimization]
+		[BurstCompileAttribute]
 		struct JobAntHead : IJob
 		{
 			public NativeArray<Matrix4x4> antMatrix;
@@ -315,7 +316,7 @@ namespace NKKD
 			var frame = new NativeArray<AniFrame>(group.Length, Allocator.TempJob);
 			for (int i = 0; i < group.Length; i++)
 			{
-				frame[i] = Shared.aniScriptSheet.scripts[motion[i].motionNo].frames[motion[i].count >> 2];
+				frame[i] = Shared.aniScriptSheet.scripts[(int)motion[i].motionType].frames[motion[i].count >> 2];
 			}
 
 			float cameraW = Cache.pixelPerfectCamera.refResolutionX >> 1;

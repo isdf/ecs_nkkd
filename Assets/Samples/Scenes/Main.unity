@@ -245,6 +245,8 @@ MonoBehaviour:
   MAP_GRID_NUM: 100
   TIP_SIZE: 10
   GRID_SIZE: 20
+  PLAYER_NUM: 1
+  CAHAR_NUM: 1
   pheromTile: []
 --- !u!114 &192078716
 MonoBehaviour:

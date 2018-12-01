@@ -43,18 +43,18 @@ namespace NKKD
 			// //Tag
 			// entityManager.SetComponentData(entity, new CharaTag);
 
+			//必要なキャラのみインプットをつける
+			if (_i < Define.Instance.PLAYER_NUM)
+			{
+				_entityManager.AddComponent(entity, ComponentType.Create<PadInput>());
+			}
+
 			//ID
 			_entityManager.SetComponentData(entity, new CharaId
 			{
 				familyId = 0,
 					myId = _i,
 			});
-
-			//必要なキャラのみインプットをつける
-			if (_i < Define.Instance.PLAYER_NUM)
-			{
-				_entityManager.AddComponent(entity, ComponentType.Create<PadInput>());
-			}
 
 			//位置
 			_entityManager.SetComponentData(entity, new Position
@@ -68,6 +68,13 @@ namespace NKKD
 
 			});
 
+			//位置
+			_entityManager.SetComponentData(entity, new CharaMuki
+			{
+				muki = EnumMuki.Right,
+					// dashMuki = EnumMuki.None,
+			});
+
 			//行動
 			_entityManager.SetComponentData(entity, new CharaBehave
 			{
@@ -76,7 +83,7 @@ namespace NKKD
 					endTime = (Time.realtimeSinceStartup + 0.5f + UnityEngine.Random.value)
 			});
 
-			//向き
+			//見た目
 			_entityManager.SetComponentData(entity, new CharaLook
 			{
 				isLeft = 0,

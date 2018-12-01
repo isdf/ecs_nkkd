@@ -101,7 +101,7 @@ namespace NKKD
 							look[i] = resLook;
 
 							resMotion.count = 0;
-							resMotion.motionNo = (int)EnumMotion.Walk;
+							resMotion.motionType = EnumMotion.Walk;
 							motion[i] = resMotion;
 						}
 						break;
@@ -113,7 +113,7 @@ namespace NKKD
 							behave[i] = resBehave;
 							CharaMotion resMotion = motion[i];
 							resMotion.count = 0;
-							resMotion.motionNo = (int)EnumMotion.Idle;
+							resMotion.motionType = EnumMotion.Idle;
 							motion[i] = resMotion;
 						}
 						break;

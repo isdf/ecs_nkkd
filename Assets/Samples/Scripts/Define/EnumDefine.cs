@@ -73,11 +73,40 @@ namespace NKKD
 		_END,
 	}
 
+	public enum EnumMuki
+	{
+		Left = -1,
+		None = 0,
+		Right = 1,
+	}
+
 	//パーツ位置
 	public enum EnumMotion
 	{
 		Idle = 0,
 		Walk,
-		//_END,
+		Dash,
+		Slip,
+		Jump,
+		Fall,
+		Land,
+		Damage,
+		Fly,
+		Down,
+		Dead,
+		Action,
 	}
+
+	//モーションフラグ
+	[Flags]
+	public enum EnumFlagMotion
+	{
+		None = 0x0000,
+		//空中
+		Air = 0x001,
+		//ダッシュ
+		Dash = 0x002,
+		//ダメージ
+		Damage = 0x003,
+		};
 }
