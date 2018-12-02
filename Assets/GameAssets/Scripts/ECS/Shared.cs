@@ -14,7 +14,7 @@ namespace NKKD
 	public static class Shared
 	{
 		//SharedComponentData
-		public static MeshMatList ariMeshMat;
+		public static MeshMatList charaMeshMat;
 		public static AniScriptSheet aniScriptSheet;
 		public static AniBasePos aniBasePos;
 		public static MeshMatList geoMeshMat;
@@ -24,12 +24,14 @@ namespace NKKD
 		public static void ReadySharedComponentData()
 		{
 			//スプライトからメッシュの作成
-			ariMeshMat = new MeshMatList();
-			ariMeshMat.Init();
+			charaMeshMat = new MeshMatList();
+			charaMeshMat.Init();
 			const int DEKUNUM = 1;
 			for (int i = 0; i < DEKUNUM; i++)
 			{
-				var res = ariMeshMat.Load("ari" + i.ToString("d2"), false, "Sprites/CharaSprite");
+
+				var res = charaMeshMat.Load("deku" + i.ToString("d2"), false, "Sprites/CharaSprite");
+				// Debug.Log(res);
 				if (res == 0)break;
 			}
 

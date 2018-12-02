@@ -116,18 +116,18 @@ namespace NKKD
 			//体
 			for (int i = 0; i < jobBody.thoraxMatrix.Length; i++)
 			{
-				var framesCount = Shared.ariMeshMat;
+				var framesCount = Shared.charaMeshMat;
 
-				Graphics.DrawMesh(Shared.ariMeshMat.meshs[0], jobBody.thoraxMatrix[i],
-					Shared.ariMeshMat.materials[0], 0);
-				Graphics.DrawMesh(Shared.ariMeshMat.meshs[1], jobBody.leftArmMatrix[i],
-					Shared.ariMeshMat.materials[1], 0);
-				Graphics.DrawMesh(Shared.ariMeshMat.meshs[1], jobBody.rightArmMatrix[i],
-					Shared.ariMeshMat.materials[1], 0);
-				Graphics.DrawMesh(Shared.ariMeshMat.meshs[2], jobBody.leftLegMatrix[i],
-					Shared.ariMeshMat.materials[2], 0);
-				Graphics.DrawMesh(Shared.ariMeshMat.meshs[2], jobBody.rightLegMatrix[i],
-					Shared.ariMeshMat.materials[2], 0);
+				Graphics.DrawMesh(Shared.charaMeshMat.meshs[0], jobBody.thoraxMatrix[i],
+					Shared.charaMeshMat.materials[0], 0);
+				Graphics.DrawMesh(Shared.charaMeshMat.meshs[1], jobBody.leftArmMatrix[i],
+					Shared.charaMeshMat.materials[1], 0);
+				Graphics.DrawMesh(Shared.charaMeshMat.meshs[1], jobBody.rightArmMatrix[i],
+					Shared.charaMeshMat.materials[1], 0);
+				Graphics.DrawMesh(Shared.charaMeshMat.meshs[2], jobBody.leftLegMatrix[i],
+					Shared.charaMeshMat.materials[2], 0);
+				Graphics.DrawMesh(Shared.charaMeshMat.meshs[2], jobBody.rightLegMatrix[i],
+					Shared.charaMeshMat.materials[2], 0);
 				//Graphics.DrawMesh(Shared.ariMeshMat.meshs[3], jobBody.gasterMatrix[i],
 				//	Shared.ariMeshMat.materials[3], 0);
 			}
@@ -137,15 +137,15 @@ namespace NKKD
 			{
 				//Graphics.DrawMesh(Shared.ariMeshMat.meshs[4], jobAntHead.antMatrix[i],
 				//	Shared.ariMeshMat.materials[4], 0);
-				Graphics.DrawMesh(Shared.ariMeshMat.meshs[5], jobAntHead.headMatrix[i],
-					Shared.ariMeshMat.materials[5], 0);
+				Graphics.DrawMesh(Shared.charaMeshMat.meshs[5], jobAntHead.headMatrix[i],
+					Shared.charaMeshMat.materials[5], 0);
 			}
 			for (int i = 0; i < jobAntHead.matrixLength[1]; i++)
 			{
 				//Graphics.DrawMesh(Shared.ariMeshMat.meshs[6], jobAntHead.antMatrix2[i],
 				//	Shared.ariMeshMat.materials[6], 0);
-				Graphics.DrawMesh(Shared.ariMeshMat.meshs[7], jobAntHead.headMatrix2[i],
-					Shared.ariMeshMat.materials[7], 0);
+				Graphics.DrawMesh(Shared.charaMeshMat.meshs[7], jobAntHead.headMatrix2[i],
+					Shared.charaMeshMat.materials[7], 0);
 			}
 
 			//NativeArrayの開放
