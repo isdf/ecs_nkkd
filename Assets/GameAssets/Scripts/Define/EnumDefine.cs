@@ -59,8 +59,12 @@ namespace NKKD
 		Gaster,
 		LeftArm,
 		RightArm,
+		LeftHand,
+		RightHand,
 		LeftLeg,
 		RightLeg,
+		LeftFoot,
+		RightFoot,
 		_END,
 	}
 

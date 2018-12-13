@@ -5,73 +5,93 @@ namespace NKKD.EDIT
 {
 	public static class BasePosition
 	{
-		public static readonly int GROUNDY = 7; //脚の地面からのドット数
-		public static readonly int COREDY = 7; //体の中心
-		public static readonly int HEADY = 7;
-		public static readonly int ANTY = 11;
-		public static readonly int ARMX = 2;
-		public static readonly int LEGX = 2;
-		public static readonly int GASTX = 6;
-		public static readonly Vector2Int THORAXBASE_EDI = new Vector2Int(0, COREDY);
-		public static readonly Vector2Int GASTERBASE_EDI = new Vector2Int(-GASTX, GROUNDY);
-		public static readonly Vector2Int HEADBASE_EDI = new Vector2Int(0, (COREDY + HEADY));
-		public static readonly Vector2Int LARMBASE_EDI = new Vector2Int(ARMX, COREDY);
-		public static readonly Vector2Int RARMBASE_EDI = new Vector2Int(-ARMX, COREDY);
-		public static readonly Vector2Int LLEGBASE_EDI = new Vector2Int(LEGX, GROUNDY);
-		public static readonly Vector2Int RLEGBASE_EDI = new Vector2Int(-LEGX, GROUNDY);
-		public static readonly Vector2Int ANTBASE_EDI = new Vector2Int(0, (COREDY + ANTY));
+		public static readonly int GROUND_Y = 7; //脚の地面からのドット数
+		public static readonly int CORE_Y = 7; //体の中心
+		public static readonly int HEAD_Y = 7;
+		public static readonly int ANT_Y = 11;
+		public static readonly int ARM_X = 2;
+		public static readonly int HAND_X = 4;
+		public static readonly int LEG_X = 2;
+		public static readonly int LEG_Y = 7;
+		public static readonly int FOOT_X = 2;
+		public static readonly Vector2Int BODY_BASE = new Vector2Int(0, CORE_Y);
+		public static readonly Vector2Int HEAD_BASE = new Vector2Int(0, (CORE_Y + HEAD_Y));
+		public static readonly Vector2Int L_ARM_BASE = new Vector2Int(ARM_X, CORE_Y);
+		public static readonly Vector2Int R_ARM_BASE = new Vector2Int(-ARM_X, CORE_Y);
+		public static readonly Vector2Int L_HAND_BASE = new Vector2Int(HAND_X, CORE_Y);
+		public static readonly Vector2Int R_HAND_BASE = new Vector2Int(-HAND_X, CORE_Y);
+		public static readonly Vector2Int L_LEG_BASE = new Vector2Int(LEG_X, LEG_Y);
+		public static readonly Vector2Int R_LEG_BASE = new Vector2Int(-LEG_X, LEG_Y);
+		public static readonly Vector2Int L_FOOT_BASE = new Vector2Int(FOOT_X, GROUND_Y);
+		public static readonly Vector2Int R_FOOT_BASE = new Vector2Int(-FOOT_X, GROUND_Y);
+		public static readonly Vector2Int ANT_BASE = new Vector2Int(0, (CORE_Y + ANT_Y));
 
-		public static readonly List<int> FRONTDEPTH = new List<int>
-		{
-			(int)enPartsType.LeftArm,
-			(int)enPartsType.LeftLeg,
-			(int)enPartsType.Gaster,
-			(int)enPartsType.Thorax,
-			(int)enPartsType.Head,
-			(int)enPartsType.Ant,
-			(int)enPartsType.RightLeg,
-			(int)enPartsType.RightArm,
-		};
-		public static readonly List<int> BACKDEPTH = new List<int>
-		{
-			(int)enPartsType.LeftArm,
-			(int)enPartsType.LeftLeg,
-			(int)enPartsType.Ant,
-			(int)enPartsType.Head,
-			(int)enPartsType.Thorax,
-			(int)enPartsType.Gaster,
-			(int)enPartsType.RightLeg,
-			(int)enPartsType.RightArm,
-		};
+		public static readonly List<int> FRONT_DEPTH = new List<int>
+			{
+				(int)enPartsType.LeftHand,
+				(int)enPartsType.LeftArm,
+				(int)enPartsType.LeftFoot,
+				(int)enPartsType.LeftLeg,
+				(int)enPartsType.Body,
+				(int)enPartsType.Head,
+				(int)enPartsType.Ant,
+				(int)enPartsType.RightFoot,
+				(int)enPartsType.RightLeg,
+				(int)enPartsType.RightHand,
+				(int)enPartsType.RightArm,
+			};
+		public static readonly List<int> BACK_DEPTH = new List<int>
+			{
+				(int)enPartsType.LeftHand,
+				(int)enPartsType.LeftArm,
+				(int)enPartsType.LeftFoot,
+				(int)enPartsType.LeftLeg,
+				(int)enPartsType.Ant,
+				(int)enPartsType.Head,
+				(int)enPartsType.Body,
+				(int)enPartsType.RightFoot,
+				(int)enPartsType.RightLeg,
+				(int)enPartsType.RightHand,
+				(int)enPartsType.RightArm,
+			};
 
 		public static Vector2Int GetPosEdit(enPartsType partsType, bool isMirror)
 		{
 			Vector2Int res = Vector2Int.zero;
 			switch (partsType)
 			{
-				case enPartsType.Thorax:
-					res = THORAXBASE_EDI;
-					break;
-				case enPartsType.Gaster:
-					res = GASTERBASE_EDI;
+				case enPartsType.Body:
+					res = BODY_BASE;
 					break;
 				case enPartsType.Head:
-					res = HEADBASE_EDI;
+					res = HEAD_BASE;
 					break;
 				case enPartsType.Ant:
-					res = ANTBASE_EDI;
+					res = ANT_BASE;
 					break;
 				case enPartsType.LeftArm:
-					res = (isMirror) ? RARMBASE_EDI : LARMBASE_EDI;
+					res = (isMirror) ? R_ARM_BASE : L_ARM_BASE;
 					break;
 				case enPartsType.RightArm:
-					res = (isMirror) ? LARMBASE_EDI : RARMBASE_EDI;
+					res = (isMirror) ? L_ARM_BASE : R_ARM_BASE;
+					break;
+				case enPartsType.LeftHand:
+					res = (isMirror) ? R_HAND_BASE : L_HAND_BASE;
+					break;
+				case enPartsType.RightHand:
+					res = (isMirror) ? L_HAND_BASE : R_HAND_BASE;
 					break;
 				case enPartsType.LeftLeg:
-					res = (isMirror) ? RLEGBASE_EDI : LLEGBASE_EDI;
+					res = (isMirror) ? R_LEG_BASE : L_LEG_BASE;
 					break;
 				case enPartsType.RightLeg:
-					res = (isMirror) ? LLEGBASE_EDI : RLEGBASE_EDI;
+					res = (isMirror) ? L_LEG_BASE : R_LEG_BASE;
+					break;
+				case enPartsType.LeftFoot:
+					res = (isMirror) ? R_FOOT_BASE : L_FOOT_BASE;
+					break;
+				case enPartsType.RightFoot:
+					res = (isMirror) ? L_FOOT_BASE : R_FOOT_BASE;
 					break;
 			}
 			return res;
@@ -82,29 +102,38 @@ namespace NKKD.EDIT
 			Vector2Int res = Vector2Int.zero;
 			switch (partsType)
 			{
-				case enPartsType.Thorax:
-					res = THORAXBASE_EDI;
-					break;
-				case enPartsType.Gaster:
-					res = GASTERBASE_EDI;
+				case enPartsType.Body:
+					res = BODY_BASE;
 					break;
 				case enPartsType.Head:
-					res = HEADBASE_EDI;
+					res = HEAD_BASE;
 					break;
 				case enPartsType.LeftArm:
-					res = LARMBASE_EDI;
+					res = L_ARM_BASE;
 					break;
 				case enPartsType.RightArm:
-					res = RARMBASE_EDI;
+					res = R_ARM_BASE;
+					break;
+				case enPartsType.LeftHand:
+					res = L_HAND_BASE;
+					break;
+				case enPartsType.RightHand:
+					res = R_HAND_BASE;
 					break;
 				case enPartsType.LeftLeg:
-					res = LLEGBASE_EDI;
+					res = L_LEG_BASE;
 					break;
 				case enPartsType.RightLeg:
-					res = RLEGBASE_EDI;
+					res = R_LEG_BASE;
+					break;
+				case enPartsType.LeftFoot:
+					res = L_FOOT_BASE;
+					break;
+				case enPartsType.RightFoot:
+					res = R_FOOT_BASE;
 					break;
 				case enPartsType.Ant:
-					res = ANTBASE_EDI;
+					res = ANT_BASE;
 					break;
 			}
 			return res;
@@ -134,30 +163,54 @@ namespace NKKD.EDIT
 			List<enPartsType> res = new List<enPartsType>();
 			if (isBack)
 			{
-				foreach (var item in BACKDEPTH)
+				foreach (var item in BACK_DEPTH)
 				{
 					enPartsType pt = (enPartsType)item;
 					if (isLeft)
 					{
-						if (pt == enPartsType.LeftArm)pt = enPartsType.RightArm;
-						else if (pt == enPartsType.RightArm)pt = enPartsType.LeftArm;
-						else if (pt == enPartsType.LeftLeg)pt = enPartsType.RightLeg;
-						else if (pt == enPartsType.RightLeg)pt = enPartsType.LeftLeg;
+						if (pt == enPartsType.LeftArm)
+							pt = enPartsType.RightArm;
+						else if (pt == enPartsType.RightArm)
+							pt = enPartsType.LeftArm;
+						else if (pt == enPartsType.LeftHand)
+							pt = enPartsType.RightHand;
+						else if (pt == enPartsType.RightHand)
+							pt = enPartsType.LeftHand;
+						else if (pt == enPartsType.LeftLeg)
+							pt = enPartsType.RightLeg;
+						else if (pt == enPartsType.RightLeg)
+							pt = enPartsType.LeftLeg;
+						else if (pt == enPartsType.LeftFoot)
+							pt = enPartsType.RightFoot;
+						else if (pt == enPartsType.RightFoot)
+							pt = enPartsType.LeftFoot;
 					}
 					res.Add(pt);
 				}
 			}
 			else
 			{
-				foreach (var item in FRONTDEPTH)
+				foreach (var item in FRONT_DEPTH)
 				{
 					enPartsType pt = (enPartsType)item;
 					if (isLeft)
 					{
-						if (pt == enPartsType.LeftArm)pt = enPartsType.RightArm;
-						else if (pt == enPartsType.RightArm)pt = enPartsType.LeftArm;
-						else if (pt == enPartsType.LeftLeg)pt = enPartsType.RightLeg;
-						else if (pt == enPartsType.RightLeg)pt = enPartsType.LeftLeg;
+						if (pt == enPartsType.LeftArm)
+							pt = enPartsType.RightArm;
+						else if (pt == enPartsType.RightArm)
+							pt = enPartsType.LeftArm;
+						else if (pt == enPartsType.LeftHand)
+							pt = enPartsType.RightHand;
+						else if (pt == enPartsType.RightHand)
+							pt = enPartsType.LeftHand;
+						else if (pt == enPartsType.LeftLeg)
+							pt = enPartsType.RightLeg;
+						else if (pt == enPartsType.RightLeg)
+							pt = enPartsType.LeftLeg;
+						else if (pt == enPartsType.LeftFoot)
+							pt = enPartsType.RightFoot;
+						else if (pt == enPartsType.RightFoot)
+							pt = enPartsType.LeftFoot;
 					}
 					res.Add(pt);
 				}
@@ -196,11 +249,11 @@ namespace NKKD.EDIT
 			float DEPTH = -0.0001f; //やっぱマイナスが上
 			if (isBack)
 			{
-				for (int i = 0; i < (int)enPartsType._END; i++)res.Add(BACKDEPTH.IndexOf(i) * DEPTH);
+				for (int i = 0; i < (int)enPartsType._END; i++)res.Add(BACK_DEPTH.IndexOf(i) * DEPTH);
 			}
 			else
 			{
-				for (int i = 0; i < (int)enPartsType._END; i++)res.Add(FRONTDEPTH.IndexOf(i) * DEPTH);
+				for (int i = 0; i < (int)enPartsType._END; i++)res.Add(FRONT_DEPTH.IndexOf(i) * DEPTH);
 			}
 			AniDepth res2 = new AniDepth();
 			res2.SetData(res.ToArray());

@@ -69,12 +69,15 @@ namespace NKKD
 
 			var jobBody = new JobBody()
 			{
-				thoraxMatrix = new NativeArray<Matrix4x4>(length, Allocator.TempJob),
-					gasterMatrix = new NativeArray<Matrix4x4>(length, Allocator.TempJob),
+				bodyMatrix = new NativeArray<Matrix4x4>(length, Allocator.TempJob),
 					leftArmMatrix = new NativeArray<Matrix4x4>(length, Allocator.TempJob),
 					rightArmMatrix = new NativeArray<Matrix4x4>(length, Allocator.TempJob),
+					leftHandMatrix = new NativeArray<Matrix4x4>(length, Allocator.TempJob),
+					rightHandMatrix = new NativeArray<Matrix4x4>(length, Allocator.TempJob),
 					leftLegMatrix = new NativeArray<Matrix4x4>(length, Allocator.TempJob),
 					rightLegMatrix = new NativeArray<Matrix4x4>(length, Allocator.TempJob),
+					leftFootMatrix = new NativeArray<Matrix4x4>(length, Allocator.TempJob),
+					rightFootMatrix = new NativeArray<Matrix4x4>(length, Allocator.TempJob),
 					isInCamera = isInCamera,
 					matrixLength = 0,
 					position = position,
@@ -114,20 +117,30 @@ namespace NKKD
 
 			//DrawMeshInstancedだとZソートがかからない（最初に描画されたやつに引っ張られてる？）
 			//体
-			for (int i = 0; i < jobBody.thoraxMatrix.Length; i++)
+			for (int i = 0; i < jobBody.bodyMatrix.Length; i++)
 			{
 				var framesCount = Shared.charaMeshMat;
 
-				Graphics.DrawMesh(Shared.charaMeshMat.meshs[0], jobBody.thoraxMatrix[i],
+				Graphics.DrawMesh(Shared.charaMeshMat.meshs[0], jobBody.bodyMatrix[i],
 					Shared.charaMeshMat.materials[0], 0);
 				Graphics.DrawMesh(Shared.charaMeshMat.meshs[1], jobBody.leftArmMatrix[i],
 					Shared.charaMeshMat.materials[1], 0);
 				Graphics.DrawMesh(Shared.charaMeshMat.meshs[1], jobBody.rightArmMatrix[i],
 					Shared.charaMeshMat.materials[1], 0);
-				Graphics.DrawMesh(Shared.charaMeshMat.meshs[2], jobBody.leftLegMatrix[i],
+				Graphics.DrawMesh(Shared.charaMeshMat.meshs[1], jobBody.leftLegMatrix[i],
+					Shared.charaMeshMat.materials[1], 0);
+				Graphics.DrawMesh(Shared.charaMeshMat.meshs[1], jobBody.rightLegMatrix[i],
+					Shared.charaMeshMat.materials[1], 0);
+
+				Graphics.DrawMesh(Shared.charaMeshMat.meshs[2], jobBody.leftHandMatrix[i],
 					Shared.charaMeshMat.materials[2], 0);
-				Graphics.DrawMesh(Shared.charaMeshMat.meshs[2], jobBody.rightLegMatrix[i],
+				Graphics.DrawMesh(Shared.charaMeshMat.meshs[2], jobBody.rightHandMatrix[i],
 					Shared.charaMeshMat.materials[2], 0);
+				Graphics.DrawMesh(Shared.charaMeshMat.meshs[2], jobBody.leftFootMatrix[i],
+					Shared.charaMeshMat.materials[2], 0);
+				Graphics.DrawMesh(Shared.charaMeshMat.meshs[2], jobBody.rightFootMatrix[i],
+					Shared.charaMeshMat.materials[2], 0);
+
 				//Graphics.DrawMesh(Shared.ariMeshMat.meshs[3], jobBody.gasterMatrix[i],
 				//	Shared.ariMeshMat.materials[3], 0);
 			}
@@ -150,12 +163,15 @@ namespace NKKD
 
 			//NativeArrayの開放
 
-			jobBody.thoraxMatrix.Dispose();
-			jobBody.gasterMatrix.Dispose();
+			jobBody.bodyMatrix.Dispose();
 			jobBody.leftArmMatrix.Dispose();
 			jobBody.rightArmMatrix.Dispose();
+			jobBody.leftHandMatrix.Dispose();
+			jobBody.rightHandMatrix.Dispose();
 			jobBody.leftLegMatrix.Dispose();
 			jobBody.rightLegMatrix.Dispose();
+			jobBody.leftFootMatrix.Dispose();
+			jobBody.rightFootMatrix.Dispose();
 
 			jobAntHead.antMatrix.Dispose();
 			jobAntHead.antMatrix2.Dispose();
@@ -215,12 +231,15 @@ namespace NKKD
 		[BurstCompileAttribute]
 		struct JobBody : IJob
 		{
-			public NativeArray<Matrix4x4> thoraxMatrix;
-			public NativeArray<Matrix4x4> gasterMatrix;
+			public NativeArray<Matrix4x4> bodyMatrix;
 			public NativeArray<Matrix4x4> leftArmMatrix;
 			public NativeArray<Matrix4x4> rightArmMatrix;
+			public NativeArray<Matrix4x4> leftHandMatrix;
+			public NativeArray<Matrix4x4> rightHandMatrix;
 			public NativeArray<Matrix4x4> leftLegMatrix;
 			public NativeArray<Matrix4x4> rightLegMatrix;
+			public NativeArray<Matrix4x4> leftFootMatrix;
+			public NativeArray<Matrix4x4> rightFootMatrix;
 			public int matrixLength;
 			[ReadOnly] public NativeArray<int> isInCamera;
 			[ReadOnly] public NativeArray<Position> position;
@@ -241,77 +260,103 @@ namespace NKKD
 					bool isBack = (look[i].isBack != 0);
 					bool isLeft = (look[i].isLeft != 0);
 
-					float thoraxDepth = position[i].Value.z;
-					float gasterDepth = position[i].Value.z;
+					float bodyDepth = position[i].Value.z;
 					float leftArmDepth = position[i].Value.z;
 					float rightArmDepth = position[i].Value.z;
+					float leftHandDepth = position[i].Value.z;
+					float rightHandDepth = position[i].Value.z;
 					float leftLegDepth = position[i].Value.z;
 					float rightLegDepth = position[i].Value.z;
+					float leftFootDepth = position[i].Value.z;
+					float rightFootDepth = position[i].Value.z;
 
 					if (isBack)
 					{
-						thoraxDepth += aniBasePos.BACKDEPTH.GetData((int)EnumPartsType.Thorax);
-						gasterDepth += aniBasePos.BACKDEPTH.GetData((int)EnumPartsType.Gaster);
+						bodyDepth += aniBasePos.BACKDEPTH.GetData((int)EnumPartsType.Thorax);
 						leftArmDepth += aniBasePos.BACKDEPTH.GetData((int)EnumPartsType.LeftArm);
 						rightArmDepth += aniBasePos.BACKDEPTH.GetData((int)EnumPartsType.RightArm);
+						leftHandDepth += aniBasePos.BACKDEPTH.GetData((int)EnumPartsType.LeftHand);
+						rightHandDepth += aniBasePos.BACKDEPTH.GetData((int)EnumPartsType.RightHand);
 						leftLegDepth += aniBasePos.BACKDEPTH.GetData((int)EnumPartsType.LeftLeg);
 						rightLegDepth += aniBasePos.BACKDEPTH.GetData((int)EnumPartsType.RightLeg);
+						leftFootDepth += aniBasePos.BACKDEPTH.GetData((int)EnumPartsType.LeftFoot);
+						rightFootDepth += aniBasePos.BACKDEPTH.GetData((int)EnumPartsType.RightFoot);
 					}
 					else
 					{
-						thoraxDepth += aniBasePos.FRONTDEPTH.GetData((int)EnumPartsType.Thorax);
-						gasterDepth += aniBasePos.FRONTDEPTH.GetData((int)EnumPartsType.Gaster);
+						bodyDepth += aniBasePos.FRONTDEPTH.GetData((int)EnumPartsType.Thorax);
 						leftArmDepth += aniBasePos.FRONTDEPTH.GetData((int)EnumPartsType.LeftArm);
 						rightArmDepth += aniBasePos.FRONTDEPTH.GetData((int)EnumPartsType.RightArm);
+						leftHandDepth += aniBasePos.FRONTDEPTH.GetData((int)EnumPartsType.LeftHand);
+						rightHandDepth += aniBasePos.FRONTDEPTH.GetData((int)EnumPartsType.RightHand);
 						leftLegDepth += aniBasePos.FRONTDEPTH.GetData((int)EnumPartsType.LeftLeg);
 						rightLegDepth += aniBasePos.FRONTDEPTH.GetData((int)EnumPartsType.RightLeg);
+						leftFootDepth += aniBasePos.FRONTDEPTH.GetData((int)EnumPartsType.LeftFoot);
+						rightFootDepth += aniBasePos.FRONTDEPTH.GetData((int)EnumPartsType.RightFoot);
 					}
 
-					float thoraxX;
-					float gasterX;
+					float bodyX;
 					float lArmX;
 					float rArmX;
 					float lLegX;
 					float rLegX;
+					float lHandX;
+					float rHandX;
+					float lFootX;
+					float rFootX;
 					Quaternion q;
 					if (isLeft)
 					{
-						thoraxX = position[i].Value.x - aniBasePos.THORAXBASE.x - frame[i].thorax.x;
-						gasterX = position[i].Value.x - aniBasePos.GASTERBASE.x - frame[i].gaster.x;
+						bodyX = position[i].Value.x - aniBasePos.BODY_BASE.x - frame[i].body.x;
 						if (isBack)
 						{
-							lArmX = position[i].Value.x - aniBasePos.RARMBASE.x - frame[i].rightArm.x;
-							rArmX = position[i].Value.x - aniBasePos.LARMBASE.x - frame[i].leftArm.x;
-							lLegX = position[i].Value.x - aniBasePos.RLEGBASE.x - frame[i].rightLeg.x;
-							rLegX = position[i].Value.x - aniBasePos.LLEGBASE.x - frame[i].leftLeg.x;
+							lArmX = position[i].Value.x - aniBasePos.R_ARM_BASE.x - frame[i].rightArm.x;
+							rArmX = position[i].Value.x - aniBasePos.L_ARM_BASE.x - frame[i].leftArm.x;
+							lHandX = position[i].Value.x - aniBasePos.R_HAND_BASE.x - frame[i].rightHand.x;
+							rHandX = position[i].Value.x - aniBasePos.L_HAND_BASE.x - frame[i].leftHand.x;
+							lLegX = position[i].Value.x - aniBasePos.R_LEG_BASE.x - frame[i].rightLeg.x;
+							rLegX = position[i].Value.x - aniBasePos.L_LEG_BASE.x - frame[i].leftLeg.x;
+							lFootX = position[i].Value.x - aniBasePos.R_FOOT_BASE.x - frame[i].rightFoot.x;
+							rFootX = position[i].Value.x - aniBasePos.L_FOOT_BASE.x - frame[i].leftFoot.x;
 						}
 						else
 						{
-							lArmX = position[i].Value.x - aniBasePos.LARMBASE.x - frame[i].leftArm.x;
-							rArmX = position[i].Value.x - aniBasePos.RARMBASE.x - frame[i].rightArm.x;
-							lLegX = position[i].Value.x - aniBasePos.LLEGBASE.x - frame[i].leftLeg.x;
-							rLegX = position[i].Value.x - aniBasePos.RLEGBASE.x - frame[i].rightLeg.x;
+							lArmX = position[i].Value.x - aniBasePos.L_ARM_BASE.x - frame[i].leftArm.x;
+							rArmX = position[i].Value.x - aniBasePos.R_ARM_BASE.x - frame[i].rightArm.x;
+							lHandX = position[i].Value.x - aniBasePos.L_HAND_BASE.x - frame[i].leftHand.x;
+							rHandX = position[i].Value.x - aniBasePos.R_HAND_BASE.x - frame[i].rightHand.x;
+							lLegX = position[i].Value.x - aniBasePos.L_LEG_BASE.x - frame[i].leftLeg.x;
+							rLegX = position[i].Value.x - aniBasePos.R_LEG_BASE.x - frame[i].rightLeg.x;
+							lFootX = position[i].Value.x - aniBasePos.L_FOOT_BASE.x - frame[i].leftFoot.x;
+							rFootX = position[i].Value.x - aniBasePos.R_FOOT_BASE.x - frame[i].rightFoot.x;
 						}
 
 						q = lrQuaternion[0];
 					}
 					else
 					{
-						thoraxX = position[i].Value.x + aniBasePos.THORAXBASE.x + frame[i].thorax.x;
-						gasterX = position[i].Value.x + aniBasePos.GASTERBASE.x + frame[i].gaster.x;
+						bodyX = position[i].Value.x + aniBasePos.BODY_BASE.x + frame[i].body.x;
 						if (isBack)
 						{
-							lArmX = position[i].Value.x + aniBasePos.RARMBASE.x + frame[i].rightArm.x;
-							rArmX = position[i].Value.x + aniBasePos.LARMBASE.x + frame[i].leftArm.x;
-							lLegX = position[i].Value.x + aniBasePos.RLEGBASE.x + frame[i].rightLeg.x;
-							rLegX = position[i].Value.x + aniBasePos.LLEGBASE.x + frame[i].leftLeg.x;
+							lArmX = position[i].Value.x + aniBasePos.R_ARM_BASE.x + frame[i].rightArm.x;
+							rArmX = position[i].Value.x + aniBasePos.L_ARM_BASE.x + frame[i].leftArm.x;
+							lHandX = position[i].Value.x + aniBasePos.R_HAND_BASE.x + frame[i].rightHand.x;
+							rHandX = position[i].Value.x + aniBasePos.L_HAND_BASE.x + frame[i].leftHand.x;
+							lLegX = position[i].Value.x + aniBasePos.R_LEG_BASE.x + frame[i].rightLeg.x;
+							rLegX = position[i].Value.x + aniBasePos.L_LEG_BASE.x + frame[i].leftLeg.x;
+							lFootX = position[i].Value.x + aniBasePos.R_FOOT_BASE.x + frame[i].rightFoot.x;
+							rFootX = position[i].Value.x + aniBasePos.L_FOOT_BASE.x + frame[i].leftFoot.x;
 						}
 						else
 						{
-							lArmX = position[i].Value.x + aniBasePos.LARMBASE.x + frame[i].leftArm.x;
-							rArmX = position[i].Value.x + aniBasePos.RARMBASE.x + frame[i].rightArm.x;
-							lLegX = position[i].Value.x + aniBasePos.LLEGBASE.x + frame[i].leftLeg.x;
-							rLegX = position[i].Value.x + aniBasePos.RLEGBASE.x + frame[i].rightLeg.x;
+							lArmX = position[i].Value.x + aniBasePos.L_ARM_BASE.x + frame[i].leftArm.x;
+							rArmX = position[i].Value.x + aniBasePos.R_ARM_BASE.x + frame[i].rightArm.x;
+							lHandX = position[i].Value.x + aniBasePos.L_HAND_BASE.x + frame[i].leftHand.x;
+							rHandX = position[i].Value.x + aniBasePos.R_HAND_BASE.x + frame[i].rightHand.x;
+							lLegX = position[i].Value.x + aniBasePos.L_LEG_BASE.x + frame[i].leftLeg.x;
+							rLegX = position[i].Value.x + aniBasePos.R_LEG_BASE.x + frame[i].rightLeg.x;
+							lFootX = position[i].Value.x + aniBasePos.L_FOOT_BASE.x + frame[i].leftFoot.x;
+							rFootX = position[i].Value.x + aniBasePos.R_FOOT_BASE.x + frame[i].rightFoot.x;
 						}
 
 						q = lrQuaternion[1];
@@ -319,36 +364,55 @@ namespace NKKD
 
 					float lArmY;
 					float rArmY;
+					float lHandY;
+					float rHandY;
 					float lLegY;
 					float rLegY;
+					float lFootY;
+					float rFootY;
+
 					if (isBack)
 					{
-						lArmY = position[i].Value.y + aniBasePos.RARMBASE.y + frame[i].rightArm.y;
-						rArmY = position[i].Value.y + aniBasePos.LARMBASE.y + frame[i].leftArm.y;
-						lLegY = position[i].Value.y + aniBasePos.RLEGBASE.y + frame[i].rightLeg.y;
-						rLegY = position[i].Value.y + aniBasePos.LLEGBASE.y + frame[i].leftLeg.y;
+						lArmY = position[i].Value.y + aniBasePos.R_ARM_BASE.y + frame[i].rightArm.y;
+						rArmY = position[i].Value.y + aniBasePos.L_ARM_BASE.y + frame[i].leftArm.y;
+						lHandY = position[i].Value.y + aniBasePos.R_HAND_BASE.y + frame[i].rightHand.y;
+						rHandY = position[i].Value.y + aniBasePos.L_HAND_BASE.y + frame[i].leftHand.y;
+						lLegY = position[i].Value.y + aniBasePos.R_LEG_BASE.y + frame[i].rightLeg.y;
+						rLegY = position[i].Value.y + aniBasePos.L_LEG_BASE.y + frame[i].leftLeg.y;
+						lFootY = position[i].Value.y + aniBasePos.R_FOOT_BASE.y + frame[i].rightFoot.y;
+						rFootY = position[i].Value.y + aniBasePos.L_FOOT_BASE.y + frame[i].leftFoot.y;
 					}
 					else
 					{
-						lArmY = position[i].Value.y + aniBasePos.LARMBASE.y + frame[i].leftArm.y;
-						rArmY = position[i].Value.y + aniBasePos.RARMBASE.y + frame[i].rightArm.y;
-						lLegY = position[i].Value.y + aniBasePos.LLEGBASE.y + frame[i].leftLeg.y;
-						rLegY = position[i].Value.y + aniBasePos.RLEGBASE.y + frame[i].rightLeg.y;
+						lArmY = position[i].Value.y + aniBasePos.L_ARM_BASE.y + frame[i].leftArm.y;
+						rArmY = position[i].Value.y + aniBasePos.R_ARM_BASE.y + frame[i].rightArm.y;
+						lHandY = position[i].Value.y + aniBasePos.L_HAND_BASE.y + frame[i].leftHand.y;
+						rHandY = position[i].Value.y + aniBasePos.R_HAND_BASE.y + frame[i].rightHand.y;
+						lLegY = position[i].Value.y + aniBasePos.L_LEG_BASE.y + frame[i].leftLeg.y;
+						rLegY = position[i].Value.y + aniBasePos.R_LEG_BASE.y + frame[i].rightLeg.y;
+						lFootY = position[i].Value.y + aniBasePos.L_FOOT_BASE.y + frame[i].leftFoot.y;
+						rFootY = position[i].Value.y + aniBasePos.R_FOOT_BASE.y + frame[i].rightFoot.y;
 					}
 
-					thoraxMatrix[matrixLength] = Matrix4x4.TRS(new Vector3(thoraxX, position[i].Value.y + aniBasePos.THORAXBASE.y + frame[i].thorax.y,
-							thoraxDepth),
-						q, one);
-					gasterMatrix[matrixLength] = Matrix4x4.TRS(new Vector3(gasterX, position[i].Value.y + aniBasePos.GASTERBASE.y + frame[i].gaster.y,
-							gasterDepth),
+					bodyMatrix[matrixLength] = Matrix4x4.TRS(new Vector3(bodyX, position[i].Value.y + aniBasePos.BODY_BASE.y + frame[i].body.y,
+							bodyDepth),
 						q, one);
 					leftArmMatrix[matrixLength] = Matrix4x4.TRS(new Vector3(lArmX, lArmY, leftArmDepth),
 						q, one);
 					rightArmMatrix[matrixLength] = Matrix4x4.TRS(new Vector3(rArmX, rArmY, rightArmDepth),
 						q, one);
+					leftHandMatrix[matrixLength] = Matrix4x4.TRS(new Vector3(lHandX, lHandY, leftHandDepth),
+						q, one);
+					rightHandMatrix[matrixLength] = Matrix4x4.TRS(new Vector3(rHandX, rHandY, rightHandDepth),
+						q, one);
+
 					leftLegMatrix[matrixLength] = Matrix4x4.TRS(new Vector3(lLegX, lLegY, leftLegDepth),
 						q, one);
 					rightLegMatrix[matrixLength] = Matrix4x4.TRS(new Vector3(rLegX, rLegY, rightLegDepth),
+						q, one);
+					leftFootMatrix[matrixLength] = Matrix4x4.TRS(new Vector3(lFootX, lFootY, leftFootDepth),
+						q, one);
+					rightFootMatrix[matrixLength] = Matrix4x4.TRS(new Vector3(rFootX, rFootY, rightFootDepth),
 						q, one);
 					matrixLength++;
 				}
@@ -403,23 +467,23 @@ namespace NKKD
 					Quaternion q;
 					if (isLeft)
 					{
-						antX = position[i].Value.x - aniBasePos.ANTBASE.x - frame[i].ant.x;
-						headX = position[i].Value.x - aniBasePos.HEADBASE.x - frame[i].head.x;
+						antX = position[i].Value.x - aniBasePos.ANT_BASE.x - frame[i].ant.x;
+						headX = position[i].Value.x - aniBasePos.HEAD_BASE.x - frame[i].head.x;
 						q = lrQuaternion[0];
 					}
 					else
 					{
-						antX = position[i].Value.x + aniBasePos.ANTBASE.x + frame[i].ant.x;
-						headX = position[i].Value.x + aniBasePos.HEADBASE.x + frame[i].head.x;
+						antX = position[i].Value.x + aniBasePos.ANT_BASE.x + frame[i].ant.x;
+						headX = position[i].Value.x + aniBasePos.HEAD_BASE.x + frame[i].head.x;
 						q = lrQuaternion[1];
 					}
 
 					Matrix4x4 tmpAntMatrix = Matrix4x4.TRS(new Vector3(antX,
-							position[i].Value.y + aniBasePos.ANTBASE.y + frame[i].ant.y,
+							position[i].Value.y + aniBasePos.ANT_BASE.y + frame[i].ant.y,
 							antDepth),
 						q, one);
 					Matrix4x4 tmpHeadMatrix = Matrix4x4.TRS(new Vector3(headX,
-							position[i].Value.y + aniBasePos.HEADBASE.y + frame[i].head.y,
+							position[i].Value.y + aniBasePos.HEAD_BASE.y + frame[i].head.y,
 							headDepth),
 						q, one);
 

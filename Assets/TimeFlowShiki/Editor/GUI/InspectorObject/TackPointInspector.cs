@@ -1,12 +1,11 @@
-using UnityEngine;
-using UnityEditor;
-
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Collections.Generic;
-using System.Runtime.Serialization.Formatters.Binary;
 using System.Reflection;
+using System.Runtime.Serialization.Formatters.Binary;
+using UnityEditor;
+using UnityEngine;
 
 namespace NKKD.EDIT
 {
@@ -31,21 +30,32 @@ namespace NKKD.EDIT
 			var tackPoint = insp.tackPoint;
 			//UpdateTackTitle(tackPoint);
 
-
 			DrawTackSpan(tackPoint);
 
 			//�e��^�C�����C��
 			switch ((TimelineType)tackPoint.timelineType_)
 			{
-				case TimelineType.TL_POS: DrawTackPos(tackPoint); break;
-				case TimelineType.TL_TRANSFORM: DrawTackTransform(tackPoint); break;
-				case TimelineType.TL_MOVE: DrawTackMove(tackPoint); break;
-				//case TimelineType.TL_ATARI: DrawTackAtari(tackPoint); break;
-				//case TimelineType.TL_HOLD: DrawTackHold(tackPoint); break;
-				//case TimelineType.TL_THROW: DrawTackThrow(tackPoint); break;
-				case TimelineType.TL_COLOR: DrawTackAni(tackPoint); break;
-				case TimelineType.TL_EFFECT: DrawTackEffect(tackPoint); break;
-				case TimelineType.TL_PASSIVE: DrawTackPassive(tackPoint); break;
+				case TimelineType.TL_POS:
+					DrawTackPos(tackPoint);
+					break;
+				case TimelineType.TL_TRANSFORM:
+					DrawTackTransform(tackPoint);
+					break;
+				case TimelineType.TL_MOVE:
+					DrawTackMove(tackPoint);
+					break;
+					//case TimelineType.TL_ATARI: DrawTackAtari(tackPoint); break;
+					//case TimelineType.TL_HOLD: DrawTackHold(tackPoint); break;
+					//case TimelineType.TL_THROW: DrawTackThrow(tackPoint); break;
+				case TimelineType.TL_COLOR:
+					DrawTackAni(tackPoint);
+					break;
+				case TimelineType.TL_EFFECT:
+					DrawTackEffect(tackPoint);
+					break;
+				case TimelineType.TL_PASSIVE:
+					DrawTackPassive(tackPoint);
+					break;
 				default:
 					Debug.LogError(tackPoint.timelineType_.ToString());
 					break;
@@ -57,8 +67,7 @@ namespace NKKD.EDIT
 
 		private void UndoKey()
 		{
-			if (Event.current.type != EventType.KeyDown) return;
-
+			if (Event.current.type != EventType.KeyDown)return;
 
 			if (Event.current.keyCode == KeyCode.Z)
 			{
@@ -78,7 +87,6 @@ namespace NKKD.EDIT
 		{
 			return new Vector2((int)pos.x, (int)pos.y);
 		}
-
 
 		private void DrawTackSpan(TackPoint tackPoint)
 		{
@@ -105,48 +113,68 @@ namespace NKKD.EDIT
 				.Where(xi => xi.x == motionId)
 				.FirstOrDefault();
 
-			if (item != null) res = item.i;
+			if (item != null)res = item.i;
 
 			return res;
 			//var motionId = EditorGUILayout.Popup("motionId", selectedIndex, JMMotionMainWindow.fileList_.ToArray());
 		}
 
-
 		//�e��C���X�y�N�^����
 		private void DrawTackPos(TackPoint tackPoint)
 		{
 			EditorGUI.BeginChangeCheck();
-			var thoraxX = EditorGUILayout.IntField("thorax.pos.x", (int)tackPoint.motionData_.mPos.thorax.pos.x);
-			var thoraxY = EditorGUILayout.IntField("thorax.pos.y", (int)tackPoint.motionData_.mPos.thorax.pos.y);
-			var gasterX = EditorGUILayout.IntField("gaster.pos.x", (int)tackPoint.motionData_.mPos.gaster.pos.x);
-			var gasterY = EditorGUILayout.IntField("gaster.pos.y", (int)tackPoint.motionData_.mPos.gaster.pos.y);
+			var bodyX = EditorGUILayout.IntField("body.pos.x", (int)tackPoint.motionData_.mPos.body.pos.x);
+			var bodyY = EditorGUILayout.IntField("body.pos.y", (int)tackPoint.motionData_.mPos.body.pos.y);
 			var headX = EditorGUILayout.IntField("head.pos.x", (int)tackPoint.motionData_.mPos.head.pos.x);
 			var headY = EditorGUILayout.IntField("head.pos.y", (int)tackPoint.motionData_.mPos.head.pos.y);
 			var leftArmX = EditorGUILayout.IntField("leftArm.pos.x", (int)tackPoint.motionData_.mPos.leftArm.pos.x);
 			var leftArmY = EditorGUILayout.IntField("leftArm.pos.y", (int)tackPoint.motionData_.mPos.leftArm.pos.y);
 			var rightArmX = EditorGUILayout.IntField("rightArm.pos.x", (int)tackPoint.motionData_.mPos.rightArm.pos.x);
 			var rightArmY = EditorGUILayout.IntField("rightArm.pos.y", (int)tackPoint.motionData_.mPos.rightArm.pos.y);
+
+			var leftHandX = EditorGUILayout.IntField("leftHand.pos.x", (int)tackPoint.motionData_.mPos.leftHand.pos.x);
+			var leftHandY = EditorGUILayout.IntField("leftHand.pos.y", (int)tackPoint.motionData_.mPos.leftHand.pos.y);
+			var rightHandX = EditorGUILayout.IntField("rightHand.pos.x", (int)tackPoint.motionData_.mPos.rightHand.pos.x);
+			var rightHandY = EditorGUILayout.IntField("rightHand.pos.y", (int)tackPoint.motionData_.mPos.rightHand.pos.y);
+
 			var leftLegX = EditorGUILayout.IntField("leftLeg.pos.x", (int)tackPoint.motionData_.mPos.leftLeg.pos.x);
 			var leftLegY = EditorGUILayout.IntField("leftLeg.pos.y", (int)tackPoint.motionData_.mPos.leftLeg.pos.y);
 			var rightLegX = EditorGUILayout.IntField("rightLeg.pos.x", (int)tackPoint.motionData_.mPos.rightLeg.pos.x);
 			var rightLegY = EditorGUILayout.IntField("rightLeg.pos.y", (int)tackPoint.motionData_.mPos.rightLeg.pos.y);
+
+			var leftFootX = EditorGUILayout.IntField("leftFoot.pos.x", (int)tackPoint.motionData_.mPos.leftFoot.pos.x);
+			var leftFootY = EditorGUILayout.IntField("leftFoot.pos.y", (int)tackPoint.motionData_.mPos.leftFoot.pos.y);
+			var rightFootX = EditorGUILayout.IntField("rightFoot.pos.x", (int)tackPoint.motionData_.mPos.rightFoot.pos.x);
+			var rightFootY = EditorGUILayout.IntField("rightFoot.pos.y", (int)tackPoint.motionData_.mPos.rightFoot.pos.y);
+
 			var antX = EditorGUILayout.IntField("Ant.pos.x", (int)tackPoint.motionData_.mPos.ant.pos.x);
 			var antY = EditorGUILayout.IntField("Ant.pos.y", (int)tackPoint.motionData_.mPos.ant.pos.y);
 
-			var thoraxCurveX = (enCurve)EditorGUILayout.EnumPopup("thorax.curveX", (enCurve)tackPoint.motionData_.mPos.thorax.curveX);
-			var thoraxCurveY = (enCurve)EditorGUILayout.EnumPopup("thorax.curveY", (enCurve)tackPoint.motionData_.mPos.thorax.curveY);
-			var gasterCurveX = (enCurve)EditorGUILayout.EnumPopup("gaster.curveX", (enCurve)tackPoint.motionData_.mPos.gaster.curveX);
-			var gasterCurveY = (enCurve)EditorGUILayout.EnumPopup("gaster.curveY", (enCurve)tackPoint.motionData_.mPos.gaster.curveY);
+			var bodyCurveX = (enCurve)EditorGUILayout.EnumPopup("body.curveX", (enCurve)tackPoint.motionData_.mPos.body.curveX);
+			var bodyCurveY = (enCurve)EditorGUILayout.EnumPopup("body.curveY", (enCurve)tackPoint.motionData_.mPos.body.curveY);
 			var headCurveX = (enCurve)EditorGUILayout.EnumPopup("head.curveX", (enCurve)tackPoint.motionData_.mPos.head.curveX);
 			var headCurveY = (enCurve)EditorGUILayout.EnumPopup("head.curveY", (enCurve)tackPoint.motionData_.mPos.head.curveY);
+
 			var leftArmCurveX = (enCurve)EditorGUILayout.EnumPopup("leftArm.curveX", (enCurve)tackPoint.motionData_.mPos.leftArm.curveX);
 			var leftArmCurveY = (enCurve)EditorGUILayout.EnumPopup("leftArm.curveY", (enCurve)tackPoint.motionData_.mPos.leftArm.curveY);
 			var rightArmCurveX = (enCurve)EditorGUILayout.EnumPopup("rightArm.curveX", (enCurve)tackPoint.motionData_.mPos.rightArm.curveX);
 			var rightArmCurveY = (enCurve)EditorGUILayout.EnumPopup("rightArm.curveY", (enCurve)tackPoint.motionData_.mPos.rightArm.curveY);
+
+			var leftHandCurveX = (enCurve)EditorGUILayout.EnumPopup("leftHand.curveX", (enCurve)tackPoint.motionData_.mPos.leftHand.curveX);
+			var leftHandCurveY = (enCurve)EditorGUILayout.EnumPopup("leftHand.curveY", (enCurve)tackPoint.motionData_.mPos.leftHand.curveY);
+			var rightHandCurveX = (enCurve)EditorGUILayout.EnumPopup("rightHand.curveX", (enCurve)tackPoint.motionData_.mPos.rightHand.curveX);
+			var rightHandCurveY = (enCurve)EditorGUILayout.EnumPopup("rightHand.curveY", (enCurve)tackPoint.motionData_.mPos.rightHand.curveY);
+
 			var leftLegCurveX = (enCurve)EditorGUILayout.EnumPopup("leftLeg.curveX", (enCurve)tackPoint.motionData_.mPos.leftLeg.curveX);
 			var leftLegCurveY = (enCurve)EditorGUILayout.EnumPopup("leftLeg.curveY", (enCurve)tackPoint.motionData_.mPos.leftLeg.curveY);
 			var rightLegCurveX = (enCurve)EditorGUILayout.EnumPopup("rightLeg.curveX", (enCurve)tackPoint.motionData_.mPos.rightLeg.curveX);
 			var rightLegCurveY = (enCurve)EditorGUILayout.EnumPopup("rightLeg.curveY", (enCurve)tackPoint.motionData_.mPos.rightLeg.curveY);
+
+			var leftFootCurveX = (enCurve)EditorGUILayout.EnumPopup("leftFoot.curveX", (enCurve)tackPoint.motionData_.mPos.leftFoot.curveX);
+			var leftFootCurveY = (enCurve)EditorGUILayout.EnumPopup("leftFoot.curveY", (enCurve)tackPoint.motionData_.mPos.leftFoot.curveY);
+			var rightFootCurveX = (enCurve)EditorGUILayout.EnumPopup("rightFoot.curveX", (enCurve)tackPoint.motionData_.mPos.rightFoot.curveX);
+			var rightFootCurveY = (enCurve)EditorGUILayout.EnumPopup("rightFoot.curveY", (enCurve)tackPoint.motionData_.mPos.rightFoot.curveY);
+
 			var AntCurveX = (enCurve)EditorGUILayout.EnumPopup("Ant.curveX", (enCurve)tackPoint.motionData_.mPos.ant.curveX);
 			var AntCurveY = (enCurve)EditorGUILayout.EnumPopup("Ant.curveY", (enCurve)tackPoint.motionData_.mPos.ant.curveY);
 
@@ -155,46 +183,57 @@ namespace NKKD.EDIT
 				var lastData = tackPoint.motionData_.mPos;
 				Action action = () =>
 				{
-					tackPoint.motionData_.mPos.thorax.pos.x = thoraxX;
-					tackPoint.motionData_.mPos.thorax.pos.y = thoraxY;
-					tackPoint.motionData_.mPos.gaster.pos.x = gasterX;
-					tackPoint.motionData_.mPos.gaster.pos.y = gasterY;
+					tackPoint.motionData_.mPos.body.pos.x = bodyX;
+					tackPoint.motionData_.mPos.body.pos.y = bodyY;
 					tackPoint.motionData_.mPos.head.pos.x = headX;
 					tackPoint.motionData_.mPos.head.pos.y = headY;
 					tackPoint.motionData_.mPos.leftArm.pos.x = leftArmX;
 					tackPoint.motionData_.mPos.leftArm.pos.y = leftArmY;
 					tackPoint.motionData_.mPos.rightArm.pos.x = rightArmX;
 					tackPoint.motionData_.mPos.rightArm.pos.y = rightArmY;
+					tackPoint.motionData_.mPos.leftHand.pos.x = leftHandX;
+					tackPoint.motionData_.mPos.leftHand.pos.y = leftHandY;
+					tackPoint.motionData_.mPos.rightHand.pos.x = rightHandX;
+					tackPoint.motionData_.mPos.rightHand.pos.y = rightHandY;
 					tackPoint.motionData_.mPos.leftLeg.pos.x = leftLegX;
 					tackPoint.motionData_.mPos.leftLeg.pos.y = leftLegY;
 					tackPoint.motionData_.mPos.rightLeg.pos.x = rightLegX;
 					tackPoint.motionData_.mPos.rightLeg.pos.y = rightLegY;
+					tackPoint.motionData_.mPos.leftFoot.pos.x = leftFootX;
+					tackPoint.motionData_.mPos.leftFoot.pos.y = leftFootY;
+					tackPoint.motionData_.mPos.rightFoot.pos.x = rightFootX;
+					tackPoint.motionData_.mPos.rightFoot.pos.y = rightFootY;
 					tackPoint.motionData_.mPos.ant.pos.x = antX;
 					tackPoint.motionData_.mPos.ant.pos.y = antY;
 
-					tackPoint.motionData_.mPos.thorax.curveX = (int)thoraxCurveX;
-					tackPoint.motionData_.mPos.thorax.curveY = (int)thoraxCurveY;
-					tackPoint.motionData_.mPos.gaster.curveX = (int)gasterCurveX;
-					tackPoint.motionData_.mPos.gaster.curveY = (int)gasterCurveY;
+					tackPoint.motionData_.mPos.body.curveX = (int)bodyCurveX;
+					tackPoint.motionData_.mPos.body.curveY = (int)bodyCurveY;
 					tackPoint.motionData_.mPos.head.curveX = (int)headCurveX;
 					tackPoint.motionData_.mPos.head.curveY = (int)headCurveY;
 					tackPoint.motionData_.mPos.leftArm.curveX = (int)leftArmCurveX;
 					tackPoint.motionData_.mPos.leftArm.curveY = (int)leftArmCurveY;
 					tackPoint.motionData_.mPos.rightArm.curveX = (int)rightArmCurveX;
 					tackPoint.motionData_.mPos.rightArm.curveY = (int)rightArmCurveY;
+					tackPoint.motionData_.mPos.leftHand.curveX = (int)leftHandCurveX;
+					tackPoint.motionData_.mPos.leftHand.curveY = (int)leftHandCurveY;
+					tackPoint.motionData_.mPos.rightHand.curveX = (int)rightHandCurveX;
+					tackPoint.motionData_.mPos.rightHand.curveY = (int)rightHandCurveY;
 					tackPoint.motionData_.mPos.leftLeg.curveX = (int)leftLegCurveX;
 					tackPoint.motionData_.mPos.leftLeg.curveY = (int)leftLegCurveY;
 					tackPoint.motionData_.mPos.rightLeg.curveX = (int)rightLegCurveX;
 					tackPoint.motionData_.mPos.rightLeg.curveY = (int)rightLegCurveY;
+					tackPoint.motionData_.mPos.leftFoot.curveX = (int)leftFootCurveX;
+					tackPoint.motionData_.mPos.leftFoot.curveY = (int)leftFootCurveY;
+					tackPoint.motionData_.mPos.rightFoot.curveX = (int)rightFootCurveX;
+					tackPoint.motionData_.mPos.rightFoot.curveY = (int)rightFootCurveY;
 					tackPoint.motionData_.mPos.ant.curveX = (int)AntCurveX;
 					tackPoint.motionData_.mPos.ant.curveY = (int)AntCurveY;
 				};
 
-
 				ARIMotionMainWindow.tackCmd_.Do(
 					new MotionCommand(MethodBase.GetCurrentMethod().Name,
-					() => { action(); },
-					() => { tackPoint.motionData_.mPos = lastData; }));
+						() => { action(); },
+						() => { tackPoint.motionData_.mPos = lastData; }));
 
 				TackPoint.Emit(new OnTrackEvent(OnTrackEvent.EventType.EVENT_TACK_CHANGE, null));
 			}
@@ -234,8 +273,8 @@ namespace NKKD.EDIT
 
 				ARIMotionMainWindow.tackCmd_.Do(
 					new MotionCommand(MethodBase.GetCurrentMethod().Name,
-					() => { action(); },
-					() => { tackPoint.motionData_.mMove = lastData; }));
+						() => { action(); },
+						() => { tackPoint.motionData_.mMove = lastData; }));
 
 				//tackPoint.motionData_.mMove.isNoLand = isNoLand;
 				TackPoint.Emit(new OnTrackEvent(OnTrackEvent.EventType.EVENT_TACK_CHANGE, null));
@@ -247,12 +286,15 @@ namespace NKKD.EDIT
 			EditorGUI.BeginChangeCheck();
 			var AntRotate = (enPartsRotate)EditorGUILayout.EnumPopup("Ant.rotate", (enPartsRotate)tackPoint.motionData_.mTransform.ant.rotate);
 			var headRotate = (enPartsRotate)EditorGUILayout.EnumPopup("head.rotate", (enPartsRotate)tackPoint.motionData_.mTransform.head.rotate);
-			var thoraxRotate = (enPartsRotate)EditorGUILayout.EnumPopup("thorax.rotate", (enPartsRotate)tackPoint.motionData_.mTransform.thorax.rotate);
-			var gasterRotate = (enPartsRotate)EditorGUILayout.EnumPopup("gaster.rotate", (enPartsRotate)tackPoint.motionData_.mTransform.gaster.rotate);
+			var bodyRotate = (enPartsRotate)EditorGUILayout.EnumPopup("body.rotate", (enPartsRotate)tackPoint.motionData_.mTransform.body.rotate);
 			var leftArmRotate = (enPartsRotate)EditorGUILayout.EnumPopup("leftArm.rotate", (enPartsRotate)tackPoint.motionData_.mTransform.leftArm.rotate);
 			var rightArmRotate = (enPartsRotate)EditorGUILayout.EnumPopup("rightArm.rotate", (enPartsRotate)tackPoint.motionData_.mTransform.rightArm.rotate);
+			var leftHandRotate = (enPartsRotate)EditorGUILayout.EnumPopup("leftHand.rotate", (enPartsRotate)tackPoint.motionData_.mTransform.leftHand.rotate);
+			var rightHandRotate = (enPartsRotate)EditorGUILayout.EnumPopup("rightHand.rotate", (enPartsRotate)tackPoint.motionData_.mTransform.rightHand.rotate);
 			var leftLegRotate = (enPartsRotate)EditorGUILayout.EnumPopup("leftLeg.rotate", (enPartsRotate)tackPoint.motionData_.mTransform.leftLeg.rotate);
 			var rightLegRotate = (enPartsRotate)EditorGUILayout.EnumPopup("rightLeg.rotate", (enPartsRotate)tackPoint.motionData_.mTransform.rightLeg.rotate);
+			var leftFootRotate = (enPartsRotate)EditorGUILayout.EnumPopup("leftFoot.rotate", (enPartsRotate)tackPoint.motionData_.mTransform.leftFoot.rotate);
+			var rightFootRotate = (enPartsRotate)EditorGUILayout.EnumPopup("rightFoot.rotate", (enPartsRotate)tackPoint.motionData_.mTransform.rightFoot.rotate);
 
 			if (EditorGUI.EndChangeCheck())
 			{
@@ -262,18 +304,22 @@ namespace NKKD.EDIT
 				{
 					tackPoint.motionData_.mTransform.ant.rotate = (int)AntRotate;
 					tackPoint.motionData_.mTransform.head.rotate = (int)headRotate;
-					tackPoint.motionData_.mTransform.thorax.rotate = (int)thoraxRotate;
-					tackPoint.motionData_.mTransform.gaster.rotate = (int)gasterRotate;
+					tackPoint.motionData_.mTransform.body.rotate = (int)bodyRotate;
+
 					tackPoint.motionData_.mTransform.leftArm.rotate = (int)leftArmRotate;
 					tackPoint.motionData_.mTransform.rightArm.rotate = (int)rightArmRotate;
+					tackPoint.motionData_.mTransform.leftHand.rotate = (int)leftHandRotate;
+					tackPoint.motionData_.mTransform.rightHand.rotate = (int)rightHandRotate;
 					tackPoint.motionData_.mTransform.leftLeg.rotate = (int)leftLegRotate;
 					tackPoint.motionData_.mTransform.rightLeg.rotate = (int)rightLegRotate;
+					tackPoint.motionData_.mTransform.leftFoot.rotate = (int)leftFootRotate;
+					tackPoint.motionData_.mTransform.rightFoot.rotate = (int)rightFootRotate;
 				};
 
 				ARIMotionMainWindow.tackCmd_.Do(
 					new MotionCommand(MethodBase.GetCurrentMethod().Name,
-					() => { action(); },
-					() => { tackPoint.motionData_.mTransform = lastData; }));
+						() => { action(); },
+						() => { tackPoint.motionData_.mTransform = lastData; }));
 
 				TackPoint.Emit(new OnTrackEvent(OnTrackEvent.EventType.EVENT_TACK_CHANGE, null));
 			}
@@ -398,13 +444,16 @@ namespace NKKD.EDIT
 			var alphaAni = (enAlphaAni)EditorGUILayout.EnumPopup("alphaAni", (enAlphaAni)tackPoint.motionData_.mColor.alphaAni);
 			var alphaVar = EditorGUILayout.IntField("alphaVar", (int)tackPoint.motionData_.mColor.alphaVar);
 
-			var isThorax = EditorGUILayout.Toggle("isThorax", tackPoint.motionData_.mColor.isThorax);
-			var isGaster = EditorGUILayout.Toggle("isGaster", tackPoint.motionData_.mColor.isGaster);
+			var isThorax = EditorGUILayout.Toggle("isThorax", tackPoint.motionData_.mColor.isBody);
 			var isHead = EditorGUILayout.Toggle("isHead", tackPoint.motionData_.mColor.isHead);
 			var isLeftArm = EditorGUILayout.Toggle("isLeftArm", tackPoint.motionData_.mColor.isLeftArm);
 			var isRightArm = EditorGUILayout.Toggle("isRightArm", tackPoint.motionData_.mColor.isRightArm);
+			var isLeftHand = EditorGUILayout.Toggle("isLeftHand", tackPoint.motionData_.mColor.isLeftHand);
+			var isRightHand = EditorGUILayout.Toggle("isRightHand", tackPoint.motionData_.mColor.isRightHand);
 			var isLeftLeg = EditorGUILayout.Toggle("isLeftLeg", tackPoint.motionData_.mColor.isLeftLeg);
 			var isRightLeg = EditorGUILayout.Toggle("isRightLeg", tackPoint.motionData_.mColor.isRightLeg);
+			var isLeftFoot = EditorGUILayout.Toggle("isLeftFoot", tackPoint.motionData_.mColor.isLeftFoot);
+			var isRightFoot = EditorGUILayout.Toggle("isRightFoot", tackPoint.motionData_.mColor.isRightFoot);
 			var isAnt = EditorGUILayout.Toggle("isAnt", tackPoint.motionData_.mColor.isAnt);
 
 			if (EditorGUI.EndChangeCheck())
@@ -417,20 +466,23 @@ namespace NKKD.EDIT
 					//tackPoint.motionData_.mAni.transformAni = (int)transformAni;
 					tackPoint.motionData_.mColor.alphaAni = (int)alphaAni;
 					tackPoint.motionData_.mColor.alphaVar = alphaVar;
-					tackPoint.motionData_.mColor.isThorax = isThorax;
-					tackPoint.motionData_.mColor.isGaster = isGaster;
+					tackPoint.motionData_.mColor.isBody = isThorax;
 					tackPoint.motionData_.mColor.isHead = isHead;
 					tackPoint.motionData_.mColor.isLeftArm = isLeftArm;
 					tackPoint.motionData_.mColor.isRightArm = isRightArm;
+					tackPoint.motionData_.mColor.isLeftHand = isLeftHand;
+					tackPoint.motionData_.mColor.isRightHand = isRightHand;
 					tackPoint.motionData_.mColor.isLeftLeg = isLeftLeg;
 					tackPoint.motionData_.mColor.isRightLeg = isRightLeg;
+					tackPoint.motionData_.mColor.isLeftFoot = isLeftFoot;
+					tackPoint.motionData_.mColor.isRightFoot = isRightFoot;
 					tackPoint.motionData_.mColor.isAnt = isAnt;
 				};
 
 				ARIMotionMainWindow.tackCmd_.Do(
 					new MotionCommand(MethodBase.GetCurrentMethod().Name,
-					() => { action(); },
-					() => { tackPoint.motionData_.mColor = lastData; }));
+						() => { action(); },
+						() => { tackPoint.motionData_.mColor = lastData; }));
 
 				TackPoint.Emit(new OnTrackEvent(OnTrackEvent.EventType.EVENT_TACK_CHANGE, null));
 			}
@@ -454,8 +506,8 @@ namespace NKKD.EDIT
 
 				ARIMotionMainWindow.tackCmd_.Do(
 					new MotionCommand(MethodBase.GetCurrentMethod().Name,
-					() => { action(); },
-					() => { tackPoint.motionData_.mEffect = lastData; }));
+						() => { action(); },
+						() => { tackPoint.motionData_.mEffect = lastData; }));
 
 				TackPoint.Emit(new OnTrackEvent(OnTrackEvent.EventType.EVENT_TACK_CHANGE, null));
 			}
@@ -478,8 +530,8 @@ namespace NKKD.EDIT
 
 				ARIMotionMainWindow.tackCmd_.Do(
 					new MotionCommand(MethodBase.GetCurrentMethod().Name,
-					() => { action(); },
-					() => { tackPoint.motionData_.mPassive = lastData; }));
+						() => { action(); },
+						() => { tackPoint.motionData_.mPassive = lastData; }));
 
 				TackPoint.Emit(new OnTrackEvent(OnTrackEvent.EventType.EVENT_TACK_CHANGE, null));
 			}

@@ -783,14 +783,17 @@ namespace NKKD.EDIT
 			//obj.aniBasePos = new AniBasePos();
 			obj.aniBasePos.FRONTDEPTH = BasePosition.OutputDepth(false);
 			obj.aniBasePos.BACKDEPTH = BasePosition.OutputDepth(true);
-			obj.aniBasePos.THORAXBASE = BasePosition.THORAXBASE_EDI;
-			obj.aniBasePos.GASTERBASE = BasePosition.GASTERBASE_EDI;
-			obj.aniBasePos.HEADBASE = BasePosition.HEADBASE_EDI;
-			obj.aniBasePos.LARMBASE = BasePosition.LARMBASE_EDI;
-			obj.aniBasePos.RARMBASE = BasePosition.RARMBASE_EDI;
-			obj.aniBasePos.LLEGBASE = BasePosition.LLEGBASE_EDI;
-			obj.aniBasePos.RLEGBASE = BasePosition.RLEGBASE_EDI;
-			obj.aniBasePos.ANTBASE = BasePosition.ANTBASE_EDI;
+			obj.aniBasePos.BODY_BASE = BasePosition.BODY_BASE;
+			obj.aniBasePos.HEAD_BASE = BasePosition.HEAD_BASE;
+			obj.aniBasePos.L_ARM_BASE = BasePosition.L_ARM_BASE;
+			obj.aniBasePos.R_ARM_BASE = BasePosition.R_ARM_BASE;
+			obj.aniBasePos.L_HAND_BASE = BasePosition.L_HAND_BASE;
+			obj.aniBasePos.R_HAND_BASE = BasePosition.R_HAND_BASE;
+			obj.aniBasePos.L_LEG_BASE = BasePosition.L_LEG_BASE;
+			obj.aniBasePos.R_LEG_BASE = BasePosition.R_LEG_BASE;
+			obj.aniBasePos.L_FOOT_BASE = BasePosition.L_FOOT_BASE;
+			obj.aniBasePos.R_FOOT_BASE = BasePosition.R_FOOT_BASE;
+			obj.aniBasePos.ANT_BASE = BasePosition.ANT_BASE;
 
 			//obj.aniBasePos.LOOKDEPTH = BasePosition.OutputDepth(enPartsAngle.Look);
 			//obj.aniBasePos.SIDEDEPTH = BasePosition.OutputDepth(enPartsAngle.Side);
@@ -846,26 +849,28 @@ namespace NKKD.EDIT
 			int typeNo = 0;
 			switch (partsType)
 			{
-				case enPartsType.Thorax:
+				case enPartsType.Body:
 					typeNo = 0;
 					break;
 				case enPartsType.LeftArm:
 				case enPartsType.RightArm:
-					typeNo = 1;
-					break;
 				case enPartsType.LeftLeg:
 				case enPartsType.RightLeg:
+					typeNo = 1;
+					break;
+				case enPartsType.LeftHand:
+				case enPartsType.RightHand:
 					typeNo = 2;
 					break;
-				case enPartsType.Gaster:
+				case enPartsType.LeftFoot:
+				case enPartsType.RightFoot:
 					typeNo = 3;
-					if (isBack)typeNo += 1;
-					break;
-				case enPartsType.Ant:
-					typeNo = 6 + (faceNo * 2);
 					break;
 				case enPartsType.Head:
-					typeNo = 7 + (faceNo * 2);
+					typeNo = 4;
+					break;
+				case enPartsType.Ant:
+					typeNo = 5;
 					break;
 				default:
 					Debug.LogError("other partsType_");

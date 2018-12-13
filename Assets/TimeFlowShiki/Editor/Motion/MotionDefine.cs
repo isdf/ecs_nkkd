@@ -1,8 +1,9 @@
-﻿using UnityEngine;
-using System;
+﻿using System;
 using System.Collections;
+using UnityEngine;
 
-namespace NKKD.EDIT {
+namespace NKKD.EDIT
+{
 
 	//モーション
 	public enum enMotionType
@@ -28,32 +29,39 @@ namespace NKKD.EDIT {
 		Leg2,
 		Opt0,
 		Action,
-	};
-	public enum enPartsTypeBase {
+		};
+		public enum enPartsTypeBase
+		{
 		Ant,
 		Head,
-		Thorax,
-		Gaster,
+		Body,
 		Arm,
+		Hand,
 		Leg,
+		Foot,
 		_END,
 	}
 
 	//パーツ位置
-	public enum enPartsType {
+	public enum enPartsType
+	{
 		Ant = 0,
 		Head,
-		Thorax,
-		Gaster,
+		Body,
 		LeftArm,
 		RightArm,
+		LeftHand,
+		RightHand,
 		LeftLeg,
 		RightLeg,
+		LeftFoot,
+		RightFoot,
 		_END,
-	};
+		};
 
-	//各種タイムライン
-	public enum TimelineType : int {
+		//各種タイムライン
+		public enum TimelineType : int
+		{
 		TL_POS,
 		TL_TRANSFORM,
 		TL_MOVE,
@@ -65,31 +73,35 @@ namespace NKKD.EDIT {
 		TL_PASSIVE,
 	}
 
-	public enum enPartsRotate {
+	public enum enPartsRotate
+	{
 		Rotate0 = 0,
 		Rotate90 = 90,
 		Rotate180 = 180,
 		Rotate270 = 270,
-	};
+		};
 
-	//当たりエフェクト
-	public enum enAtariEffect {
+		//当たりエフェクト
+		public enum enAtariEffect
+		{
 		Normal,
-	};
+		};
 
-	//パーティクルエフェクト
-	public enum enParticleEffect {
+		//パーティクルエフェクト
+		public enum enParticleEffect
+		{
 		None,
-	};
+		};
 
-	//特殊エフェクト
-	public enum enSpecialEffect {
+		//特殊エフェクト
+		public enum enSpecialEffect
+		{
 		None,
-	};
+		};
 
-
-	//位置移動カーブ
-	public enum enCurve {
+		//位置移動カーブ
+		public enum enCurve
+		{
 		Normal,
 		SinCurve,
 		CosCurve,
@@ -104,13 +116,12 @@ namespace NKKD.EDIT {
 		Log6Curve,
 		Exp8Curve,
 		Log8Curve,
-	};
+		};
 
-
-
-	//パレットアニメーション
-	public enum enPaletteAni {
-		Def,//現状維持
+		//パレットアニメーション
+		public enum enPaletteAni
+		{
+		Def, //現状維持
 		Mono,
 		Mono2,
 		Cyan,
@@ -132,10 +143,11 @@ namespace NKKD.EDIT {
 		Emerald,
 		Emerald2,
 		Water,
-	};
+		};
 
-	//トランスフォームアニメーション
-	public enum enTransformAni {
+		//トランスフォームアニメーション
+		public enum enTransformAni
+		{
 		None,
 		AngleLLo,
 		AngleLMid,
@@ -149,29 +161,32 @@ namespace NKKD.EDIT {
 		RotateRLo,
 		RotateRMid,
 		RotateRHi,
-	};
+		};
 
-	//透過アニメーション
-	public enum enAlphaAni {
-		Continue,//現状維持
-		Stop,//停止
-		Alpha,//透過度
-		Brink,//点滅
-		FadeIn,//フェードイン
-		FadeOut,//フェードアウト
-	};
+		//透過アニメーション
+		public enum enAlphaAni
+		{
+		Continue, //現状維持
+		Stop, //停止
+		Alpha, //透過度
+		Brink, //点滅
+		FadeIn, //フェードイン
+		FadeOut, //フェードアウト
+		};
 
-	//分岐条件
-	public enum enSwitchCondition {
+		//分岐条件
+		public enum enSwitchCondition
+		{
 		None,
-		Hit,//攻撃ヒット
-		Damage,//ダメージ
-		Land,//着地
-		Input,//追加入力
-		Finish,//アニメーション終了時
-	};
+		Hit, //攻撃ヒット
+		Damage, //ダメージ
+		Land, //着地
+		Input, //追加入力
+		Finish, //アニメーション終了時
+		};
 
-	public struct MotionState {
+		public struct MotionState
+		{
 		//各種タイムライン
 		public MotionPosState stPos;
 		public MotionTransformState stTransform;
@@ -180,18 +195,20 @@ namespace NKKD.EDIT {
 		public MotionEffectState stEffect;
 		public MotionPassiveState stPassive;
 
-		public void Reset(bool isPosReset) {
-			if (isPosReset) stPos = new MotionPosState();
-			stTransform = new MotionTransformState();
-			stMove = new MotionMoveState();
-			stColor = new MotionColorState();
-			stEffect = new MotionEffectState();
-			stPassive = new MotionPassiveState();
+		public void Reset(bool isPosReset)
+		{
+		if (isPosReset)stPos = new MotionPosState();
+		stTransform = new MotionTransformState();
+		stMove = new MotionMoveState();
+		stColor = new MotionColorState();
+		stEffect = new MotionEffectState();
+		stPassive = new MotionPassiveState();
 		}
 	}
 
 	[SerializeField]
-	public struct MotionData {
+	public struct MotionData
+	{
 		//各種タイムライン
 		[SerializeField]
 		public MotionPos mPos;
@@ -207,12 +224,14 @@ namespace NKKD.EDIT {
 		public MotionPassive mPassive;
 	}
 
-
 	//パレットアニメーション
-	public static class PaletteAnimation {
-		public static int GetPaletteNo(enPaletteAni paletteAni, int frame) {
+	public static class PaletteAnimation
+	{
+		public static int GetPaletteNo(enPaletteAni paletteAni, int frame)
+		{
 			int res = 0;
-			if (paletteAni != enPaletteAni.Def) {
+			if (paletteAni != enPaletteAni.Def)
+			{
 				int[] PALNO = { 0, 1, 2, 1 };
 
 				int itv = (8 * FPSManager.Instance.motionFps_) / 60;

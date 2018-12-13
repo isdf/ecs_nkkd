@@ -1,10 +1,10 @@
-﻿using UnityEngine;
-using System;
+﻿using System;
 using System.Collections;
+using UnityEngine;
 
 namespace NKKD.EDIT
 {
-	[Serializable]//シリアライズするため必要
+	[Serializable] //シリアライズするため必要
 	public struct PartsTransform
 	{
 		//public int ani;
@@ -29,12 +29,16 @@ namespace NKKD.EDIT
 	{
 
 		public PartsTransform head;
-		public PartsTransform thorax;
+		public PartsTransform body;
 		public PartsTransform gaster;
 		public PartsTransform leftArm;
 		public PartsTransform rightArm;
+		public PartsTransform leftHand;
+		public PartsTransform rightHand;
 		public PartsTransform leftLeg;
 		public PartsTransform rightLeg;
+		public PartsTransform leftFoot;
+		public PartsTransform rightFoot;
 		public PartsTransform ant;
 
 		public PartsTransform GetTransform(enPartsType partsType)
@@ -42,14 +46,39 @@ namespace NKKD.EDIT
 			PartsTransform res = new PartsTransform();
 			switch (partsType)
 			{
-				case enPartsType.Thorax: res = thorax; break;
-				case enPartsType.Gaster: res = gaster; break;
-				case enPartsType.Head: res = head; break;
-				case enPartsType.LeftArm: res = leftArm; break;
-				case enPartsType.LeftLeg: res = leftLeg; break;
-				case enPartsType.RightArm: res = rightArm; break;
-				case enPartsType.RightLeg: res = rightLeg; break;
-				case enPartsType.Ant: res = ant; break;
+				case enPartsType.Body:
+					res = body;
+					break;
+				case enPartsType.Head:
+					res = head;
+					break;
+				case enPartsType.LeftArm:
+					res = leftArm;
+					break;
+				case enPartsType.RightArm:
+					res = rightArm;
+					break;
+				case enPartsType.LeftHand:
+					res = leftHand;
+					break;
+				case enPartsType.RightHand:
+					res = rightHand;
+					break;
+				case enPartsType.LeftLeg:
+					res = leftLeg;
+					break;
+				case enPartsType.RightLeg:
+					res = rightLeg;
+					break;
+				case enPartsType.LeftFoot:
+					res = leftFoot;
+					break;
+				case enPartsType.RightFoot:
+					res = rightFoot;
+					break;
+				case enPartsType.Ant:
+					res = ant;
+					break;
 			}
 			return res;
 		}
@@ -58,16 +87,41 @@ namespace NKKD.EDIT
 		{
 			switch (partsType)
 			{
-				case enPartsType.Thorax: thorax = value; break;
-				case enPartsType.Gaster: gaster = value; break;
-				case enPartsType.Head: head = value; break;
-				case enPartsType.LeftArm: leftArm = value; break;
-				case enPartsType.LeftLeg: leftLeg = value; break;
-				case enPartsType.RightArm: rightArm = value; break;
-				case enPartsType.RightLeg: rightLeg = value; break;
-				case enPartsType.Ant: ant = value; break;
+				case enPartsType.Body:
+					body = value;
+					break;
+				case enPartsType.Head:
+					head = value;
+					break;
+				case enPartsType.LeftArm:
+					leftArm = value;
+					break;
+				case enPartsType.RightArm:
+					rightArm = value;
+					break;
+				case enPartsType.LeftHand:
+					leftHand = value;
+					break;
+				case enPartsType.RightHand:
+					rightHand = value;
+					break;
+				case enPartsType.LeftLeg:
+					leftLeg = value;
+					break;
+				case enPartsType.RightFoot:
+					rightFoot = value;
+					break;
+				case enPartsType.LeftFoot:
+					leftFoot = value;
+					break;
+				case enPartsType.RightLeg:
+					rightLeg = value;
+					break;
+				case enPartsType.Ant:
+					ant = value;
+					break;
 			}
-			
+
 		}
 
 		public void SetRotate(enPartsType partsType, enPartsRotate rotate)
@@ -75,14 +129,27 @@ namespace NKKD.EDIT
 			int intRotate = (int)rotate;
 			switch (partsType)
 			{
-				case enPartsType.Thorax: thorax.rotate = intRotate; break;
-				case enPartsType.Gaster: gaster.rotate = intRotate; break;
-				case enPartsType.Head: head.rotate = intRotate; break;
-				case enPartsType.LeftArm: leftArm.rotate = intRotate; break;
-				case enPartsType.LeftLeg: leftLeg.rotate = intRotate; break;
-				case enPartsType.RightArm: rightArm.rotate = intRotate; break;
-				case enPartsType.RightLeg: rightLeg.rotate = intRotate; break;
-				case enPartsType.Ant: ant.rotate = intRotate; break;
+				case enPartsType.Body:
+					body.rotate = intRotate;
+					break;
+				case enPartsType.Head:
+					head.rotate = intRotate;
+					break;
+				case enPartsType.LeftArm:
+					leftArm.rotate = intRotate;
+					break;
+				case enPartsType.LeftLeg:
+					leftLeg.rotate = intRotate;
+					break;
+				case enPartsType.RightArm:
+					rightArm.rotate = intRotate;
+					break;
+				case enPartsType.RightLeg:
+					rightLeg.rotate = intRotate;
+					break;
+				case enPartsType.Ant:
+					ant.rotate = intRotate;
+					break;
 			}
 		}
 		public enPartsRotate GetRotate(enPartsType partsType)
@@ -90,14 +157,39 @@ namespace NKKD.EDIT
 			int res = 0;
 			switch (partsType)
 			{
-				case enPartsType.Thorax: res = thorax.rotate; break;
-				case enPartsType.Gaster: res = gaster.rotate; break;
-				case enPartsType.Head: res = head.rotate; break;
-				case enPartsType.LeftArm: res = leftArm.rotate; break;
-				case enPartsType.LeftLeg: res = leftLeg.rotate; break;
-				case enPartsType.RightArm: res = rightArm.rotate; break;
-				case enPartsType.RightLeg: res = rightLeg.rotate; break;
-				case enPartsType.Ant: res = ant.rotate; break;
+				case enPartsType.Body:
+					res = body.rotate;
+					break;
+				case enPartsType.Head:
+					res = head.rotate;
+					break;
+				case enPartsType.LeftArm:
+					res = leftArm.rotate;
+					break;
+				case enPartsType.RightArm:
+					res = rightArm.rotate;
+					break;
+				case enPartsType.LeftHand:
+					res = leftHand.rotate;
+					break;
+				case enPartsType.RightHand:
+					res = rightHand.rotate;
+					break;
+				case enPartsType.LeftLeg:
+					res = leftLeg.rotate;
+					break;
+				case enPartsType.RightLeg:
+					res = rightLeg.rotate;
+					break;
+				case enPartsType.LeftFoot:
+					res = leftLeg.rotate;
+					break;
+				case enPartsType.RightFoot:
+					res = rightLeg.rotate;
+					break;
+				case enPartsType.Ant:
+					res = ant.rotate;
+					break;
 			}
 			return (enPartsRotate)res;
 		}
@@ -195,16 +287,43 @@ namespace NKKD.EDIT
 		//	return (enTransformAni)res;
 		//}
 
-		public void Reset(enPartsType partsType) {
-			switch (partsType) {
-				case enPartsType.Thorax: thorax.Reset(); break;
-				case enPartsType.Gaster: gaster.Reset(); break;
-				case enPartsType.Head: head.Reset(); break;
-				case enPartsType.LeftArm: leftArm.Reset(); break;
-				case enPartsType.LeftLeg: leftLeg.Reset(); break;
-				case enPartsType.RightArm: rightArm.Reset(); break;
-				case enPartsType.RightLeg: rightLeg.Reset(); break;
-				case enPartsType.Ant: ant.Reset(); break;
+		public void Reset(enPartsType partsType)
+		{
+			switch (partsType)
+			{
+				case enPartsType.Body:
+					body.Reset();
+					break;
+				case enPartsType.Head:
+					head.Reset();
+					break;
+				case enPartsType.LeftArm:
+					leftArm.Reset();
+					break;
+				case enPartsType.RightArm:
+					rightArm.Reset();
+					break;
+				case enPartsType.LeftHand:
+					leftHand.Reset();
+					break;
+				case enPartsType.RightHand:
+					rightHand.Reset();
+					break;
+				case enPartsType.LeftLeg:
+					leftLeg.Reset();
+					break;
+				case enPartsType.RightLeg:
+					rightLeg.Reset();
+					break;
+				case enPartsType.LeftFoot:
+					leftFoot.Reset();
+					break;
+				case enPartsType.RightFoot:
+					rightFoot.Reset();
+					break;
+				case enPartsType.Ant:
+					ant.Reset();
+					break;
 			}
 		}
 	}
