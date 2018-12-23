@@ -138,14 +138,26 @@ namespace NKKD.EDIT
 				case enPartsType.LeftArm:
 					leftArm.pos = pos;
 					break;
-				case enPartsType.LeftLeg:
-					leftLeg.pos = pos;
-					break;
 				case enPartsType.RightArm:
 					rightArm.pos = pos;
 					break;
+				case enPartsType.LeftHand:
+					leftHand.pos = pos;
+					break;
+				case enPartsType.RightHand:
+					rightHand.pos = pos;
+					break;
+				case enPartsType.LeftLeg:
+					leftLeg.pos = pos;
+					break;
 				case enPartsType.RightLeg:
 					rightLeg.pos = pos;
+					break;
+				case enPartsType.LeftFoot:
+					leftFoot.pos = pos;
+					break;
+				case enPartsType.RightFoot:
+					rightFoot.pos = pos;
 					break;
 				case enPartsType.Ant:
 					ant.pos = pos;

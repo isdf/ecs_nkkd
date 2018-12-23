@@ -32,7 +32,6 @@ namespace NKKD.EDIT
 
 			DrawTackSpan(tackPoint);
 
-			//�e��^�C�����C��
 			switch ((TimelineType)tackPoint.timelineType_)
 			{
 				case TimelineType.TL_POS:

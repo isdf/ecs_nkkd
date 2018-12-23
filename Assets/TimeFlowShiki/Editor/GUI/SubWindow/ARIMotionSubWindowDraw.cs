@@ -9,8 +9,7 @@ namespace NKKD.EDIT
 {
 	public partial class ARIMotionSubWindow
 	{
-
-		//描画
+		///<summary>描画</summary>
 		void DrawAutoConponent()
 		{
 			DrawLabel();
@@ -19,7 +18,22 @@ namespace NKKD.EDIT
 			if (isRepaint_)Repaint();
 		}
 
-		//描画系///////////////////////////////
+		/// <summary>キャラ描画</summary>
+		void DrawChar()
+		{
+			DrawPartsAll();
+			//DrawPartsAll(false);
+			// DrawPartsLabel();
+
+			DrawGridLine3();
+			if (focusObject_ == enFocusObject.focusTack)
+			{
+				DrawGridLine3Sub();
+				DrawGridLine3Cross(tempMovePos_, new Color(1f, 0.5f, 1f, 0.8f));
+			}
+		}
+
+		///<summary>ラベル描画</summary>
 		void DrawLabel()
 		{
 
@@ -73,7 +87,8 @@ namespace NKKD.EDIT
 			}
 
 		}
-		// グリッド線を描画
+
+		/// <summary>グリッド線を描画</summary>
 		void DrawGridLine3()
 		{
 			// grid
@@ -94,6 +109,8 @@ namespace NKKD.EDIT
 			}
 
 		}
+
+		///<summary>方眼線</summary>
 		void DrawGridLine3Sub()
 		{
 			for (int i = 0; i < 8; i++)
@@ -121,7 +138,7 @@ namespace NKKD.EDIT
 			}
 		}
 
-		// グリッド線を描画
+		///<summary>原点表示線</summary>
 		void DrawGridLine3Cross(Vector2 pos, Color col)
 		{
 			if (pos == Vector2.zero)return;
@@ -142,8 +159,7 @@ namespace NKKD.EDIT
 				Handles.DrawLine((camPos_ + st + pos) * mag_, (camPos_ + ed + pos) * mag_);
 			}
 		}
-
-		//全パーツ描画
+		///<summary>全パーツ描画</summary>
 		void DrawPartsAll()
 		{
 			try
@@ -154,7 +170,8 @@ namespace NKKD.EDIT
 				{
 					foreach (var item in drawList)
 						if (!isMultiParts_[item])DrawParts(item, false); //非選択
-					//foreach (var item in drawList) if (isMultiParts_[item]) DrawParts(item, isHold, false);//選択
+					foreach (var item in drawList)
+						if (isMultiParts_[item])DrawParts(item, false); //選択
 				}
 				else
 				{
@@ -168,6 +185,7 @@ namespace NKKD.EDIT
 
 		}
 
+		///<summary>グレーアウト表示</summary>
 		bool IsDark(enPartsType partsType)
 		{
 			bool res = false;
@@ -200,7 +218,7 @@ namespace NKKD.EDIT
 			return res;
 		}
 
-		//パーツ描画
+		/// <summary>各パーツ描画</summary>
 		void DrawParts(enPartsType partsType, bool isLabel)
 		{
 			PartsObject partsObject = GetPartsObject(partsType);
@@ -265,6 +283,7 @@ namespace NKKD.EDIT
 
 		}
 
+		/// <summary>パーツラベル描画</summary>
 		void DrawPartsLabel()
 		{
 			List<enPartsType> drawList = BasePosition.GenGetZSortList(sendMotion_.stPassive.isLeft, sendMotion_.stPassive.isBack);
@@ -318,22 +337,7 @@ namespace NKKD.EDIT
 
 		}
 
-		//キャラ描画
-		void DrawChar()
-		{
-			DrawPartsAll();
-			//DrawPartsAll(false);
-			// DrawPartsLabel();
-
-			DrawGridLine3();
-			if (focusObject_ == enFocusObject.focusTack)
-			{
-				DrawGridLine3Sub();
-				DrawGridLine3Cross(tempMovePos_, new Color(1f, 0.5f, 1f, 0.8f));
-			}
-		}
-
-		//スプライトの大きさ取得
+		///<summary>スプライトの大きさ取得</summary>
 		public static Rect GetSpriteNormalRect(Sprite sp)
 		{
 			// spriteの親テクスチャー上のRect座標を取得.

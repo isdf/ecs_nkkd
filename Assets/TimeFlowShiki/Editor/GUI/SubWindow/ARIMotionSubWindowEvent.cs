@@ -10,8 +10,7 @@ namespace NKKD.EDIT
 {
 	public partial class ARIMotionSubWindow : EditorWindow
 	{
-
-		//入力イベント
+		///<summary>入力イベント</summary>
 		private void HandlingEvent()
 		{
 			//カメラ位置移動
@@ -34,14 +33,14 @@ namespace NKKD.EDIT
 								{ { "Copy Pos", OnTrackEvent.EventType.EVENT_PARTS_COPY },
 									{ "Paste Pos", OnTrackEvent.EventType.EVENT_PARTS_PASTE },
 								});
-							//SelectParts();//posは複数選択可能
+							SelectParts(); //posは複数選択可能
 							SelectPartsAll();
 							SelectPartsKey();
 							ChangePos();
 							ChangePosKey();
 							break;
 						case TimelineType.TL_TRANSFORM:
-							//SelectParts();
+							SelectParts();
 							SelectPartsAll();
 							ChangeTransformRotate();
 							//ChangeTransformAngle();
@@ -68,7 +67,7 @@ namespace NKKD.EDIT
 			}
 		}
 
-		//カメラ視点移動
+		///<summary>カメラ視点移動</summary>
 		private void MoveCamera()
 		{
 			Event e = Event.current;
@@ -86,7 +85,7 @@ namespace NKKD.EDIT
 			}
 		}
 
-		//カメラ倍率変更
+		///<summary>カメラ倍率変更</summary>
 		private void ChangeCameraMag()
 		{
 			Event e = Event.current;
@@ -114,7 +113,7 @@ namespace NKKD.EDIT
 			}
 		}
 
-		//右クリックによるメニュー表示
+		///<summary>右クリックによるメニュー表示</summary>
 		private void ShowMenu(Dictionary<string, OnTrackEvent.EventType> menuItems)
 		{
 			// right click.	
@@ -124,7 +123,7 @@ namespace NKKD.EDIT
 				if (Event.current.button == 1)ShowContextMenu(menuItems);
 			}
 		}
-		//右クリックメニュー
+		///<summary>右クリックメニュー</summary>
 		private void ShowContextMenu(Dictionary<string, OnTrackEvent.EventType> menuItems)
 		{
 			var menu = new GenericMenu();
@@ -136,7 +135,7 @@ namespace NKKD.EDIT
 			menu.ShowAsContext();
 		}
 
-		//システムキー入力
+		///<summary>システムキー入力</summary>
 		private void SystemKey()
 		{
 			if (Event.current.type != EventType.KeyDown)return;
@@ -165,9 +164,12 @@ namespace NKKD.EDIT
 				isRepaint_ = true;
 			}
 		}
+
+		///<summary>全パーツ選択</summary>
 		private void SelectPartsAll()
 		{
-			if (Event.current.type != EventType.KeyDown)return;
+			if (Event.current.type != EventType.KeyDown)
+				return;
 
 			var keycode = Event.current.keyCode;
 
@@ -188,22 +190,72 @@ namespace NKKD.EDIT
 			}
 		}
 
-		private void SelectPartsKey() //bool isMulti)
+		private void SelectParts()
+		{
+			if (Event.current.button != 0)return;
+			Vector2 mousePos = (Event.current.mousePosition / mag_) - camPos_;
+			//Yは反転
+			mousePos.y = -mousePos.y;
+
+			if (Event.current.type == EventType.MouseDown)
+			{
+				enPartsType partsType = enPartsType._END;
+				Debug.Log(mousePos);
+				foreach (enPartsType item in Enum.GetValues(typeof(enPartsType)))
+				{
+
+					Vector2Int itemPos = GetPartsObject(item).pos;
+					// Debug.Log(item.ToString() + itemPos.ToString());
+					const int SIZE = 1;
+					if ((mousePos.x > (itemPos.x - SIZE))
+						&& (mousePos.x < (itemPos.x + SIZE))
+						&& (mousePos.y > (itemPos.y - SIZE))
+						&& (mousePos.x < (itemPos.y + SIZE))
+					)
+					{
+						partsType = item;
+						break;
+					}
+				}
+
+				foreach (enPartsType item in Enum.GetValues(typeof(enPartsType)))
+				{
+					isMultiParts_[item] = (partsType != item)
+						? false
+						: !isMultiParts_[item];
+					multiOffset_[item] = Vector2Int.zero;
+				}
+				isRepaint_ = true;
+
+				SetupPartsData(true);
+			}
+		}
+
+		///<summary>パーツ選択</summary>
+		private void SelectPartsKey()
 		{
 
-			if (Event.current.type != EventType.KeyDown)return;
+			if (Event.current.type != EventType.KeyDown)
+				return;
 
 			var keycode = Event.current.keyCode;
+			var isCtrl = Event.current.control;
 
-			if ((keycode == KeyCode.Keypad1) || (keycode == KeyCode.Keypad2) || (keycode == KeyCode.Keypad3)
-				|| (keycode == KeyCode.Keypad4) || (keycode == KeyCode.Keypad5) || (keycode == KeyCode.Keypad6)
-				|| (keycode == KeyCode.Keypad7) || (keycode == KeyCode.Keypad8) || (keycode == KeyCode.Keypad9)
+			if ((keycode == KeyCode.Keypad1)
+				|| (keycode == KeyCode.Keypad2)
+				|| (keycode == KeyCode.Keypad3)
+				|| (keycode == KeyCode.Keypad4)
+				|| (keycode == KeyCode.Keypad5)
+				|| (keycode == KeyCode.Keypad6)
+				|| (keycode == KeyCode.Keypad7)
+				|| (keycode == KeyCode.Keypad8)
+				|| (keycode == KeyCode.Keypad9)
+				|| (keycode == KeyCode.Keypad0)
+				|| (keycode == KeyCode.KeypadPeriod)
 			)
 			{
 				List<enPartsType> drawList = BasePosition.GenGetZSortList(sendMotion_.stPassive.isLeft, sendMotion_.stPassive.isBack);
 				enPartsType partsType = enPartsType.Body;
-				bool isAll = false;
-				bool isAllSelect = false;
 				switch (keycode)
 				{
 					case KeyCode.Keypad8:
@@ -243,14 +295,26 @@ namespace NKKD.EDIT
 						return;
 				}
 
-				foreach (var item in drawList)
+				if (isCtrl)
 				{
-					if ((!isAll) && (partsType != item))continue;
-					isMultiParts_[item] = (isAllSelect)
-						? true
-						: !isMultiParts_[item];
+					foreach (var item in drawList)
+					{
+						if (partsType != item)
+							continue;
 
-					multiOffset_[item] = Vector2Int.zero;
+						isMultiParts_[item] = !isMultiParts_[item];
+						multiOffset_[item] = Vector2Int.zero;
+					}
+				}
+				else
+				{
+					foreach (var item in drawList)
+					{
+						isMultiParts_[item] = (partsType != item)
+							? false
+							: !isMultiParts_[item];
+						multiOffset_[item] = Vector2Int.zero;
+					}
 				}
 
 				isRepaint_ = true;
@@ -258,6 +322,8 @@ namespace NKKD.EDIT
 		}
 
 		//Pos---------------
+
+		///<summary>マウスによる位置移動</summary>
 		private void ChangePos()
 		{
 			if (Event.current.button != 0)return;
@@ -300,7 +366,7 @@ namespace NKKD.EDIT
 			}
 		}
 
-		//パーツ位置移動2
+		///<summary>キーによる位置移動</summary>
 		private void ChangePosKey()
 		{
 			if (Event.current.type != EventType.KeyDown)return;

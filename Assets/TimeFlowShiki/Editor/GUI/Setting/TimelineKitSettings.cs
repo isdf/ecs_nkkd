@@ -19,7 +19,6 @@ namespace NKKD.EDIT
 		public const string TIMEFLOWSHIKI_DATA_TACK_SPAN = "span";
 		public const string TIMEFLOWSHIKI_DATA_TACK_TIMELINETYPE = "type";
 
-		//�e��^�C�����C��
 		public const string TIMEFLOWSHIKI_DATA_TACK_POSDATA = "pos";
 		public const string TIMEFLOWSHIKI_DATA_TACK_TRANSFORMDATA = "transform";
 		public const string TIMEFLOWSHIKI_DATA_TACK_MOVEDATA = "move";

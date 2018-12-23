@@ -28,7 +28,6 @@ namespace NKKD.EDIT
 			}
 			void UpdateTimelineTrackTitle(TimelineTrack timelineTrack)
 			{
-				//���C���X�y�N�^�̕\��
 				//var newTitle = EditorGUILayout.TextField("title", timelineTrack.title_);
 				//var charManager = EditorGUILayout.ObjectField("charManager", timelineTrack.charManager, typeof(JMCharManager),true);
 
@@ -60,7 +59,6 @@ namespace NKKD.EDIT
 		[SerializeField]
 		public bool haveActiveTack_;
 
-		//���ێ��f�[�^
 		[SerializeField]
 		public List<TackPoint> tackPoints_ = new List<TackPoint>();
 		[SerializeField]
@@ -95,7 +93,6 @@ namespace NKKD.EDIT
 			this.timelineId_ = WindowSettings.ID_HEADER_TIMELINE + Guid.NewGuid().ToString();
 			this.index_ = index;
 
-			//���f�[�^�ǉ��̍ۂ̓R�R�ɒǉ�
 			this.timelineType_ = timelineType;
 			this.tackPoints_ = new List<TackPoint>(tackPoints);
 
@@ -115,7 +112,6 @@ namespace NKKD.EDIT
 			this.timelineId_ = WindowSettings.ID_HEADER_TIMELINE + Guid.NewGuid().ToString();
 			this.index_ = index;
 
-			//���f�[�^�ǉ��̍ۂ̓R�R�ɒǉ�
 			this.timelineType_ = Convert.ToInt32(scoreTimelineDict[TimeFlowShikiSettings.TIMEFLOWSHIKI_DATA_TIMELINE_TYPE]);
 			this.tackPoints_ = currentTacks;
 
@@ -126,7 +122,6 @@ namespace NKKD.EDIT
 			ApplyTextureToTacks(index);
 		}
 
-		//���f�[�^�ǉ��̍ۂ̓R�R�ɒǉ�
 		public Dictionary<string, object> OutputDict(List<object> tackList)
 		{
 			var res = new Dictionary<string, object>
@@ -137,11 +132,9 @@ namespace NKKD.EDIT
 			return res;
 		}
 
-		//�X�N���v�^�u���I�u�W�F�p�o��
 		public MotionTimeline OutputTimelineObject()
 		{
 			MotionTimeline res = null;
-			//�e��^�C�����C��
 			switch ((TimelineType)timelineType_)
 			{
 				case TimelineType.TL_POS:
@@ -169,10 +162,8 @@ namespace NKKD.EDIT
 			return res;
 		}
 
-		//�X�N���v�^�u���I�u�W�F�p�o��List<AniScriptFrame>
 		public void OutputAniScript(List<AniFrame> aniScriptFrames)
 		{
-			//�e��^�C�����C��
 			switch ((TimelineType)timelineType_)
 			{
 				case TimelineType.TL_POS:
@@ -196,7 +187,6 @@ namespace NKKD.EDIT
 
 		}
 
-		//�S�t���[���̒��ԃ��[�V��������
 		List<MotionPosState> GetIntermediatePos()
 		{
 			List<MotionPosState> res = new List<MotionPosState>();
@@ -206,7 +196,7 @@ namespace NKKD.EDIT
 				var nowTack = tackPoints_[i];
 				TackPoint prevTack = (i > 0)
 					? tackPoints_[i - 1]
-					: new TackPoint(); //�ŏ��̃^�b�N�͑O���Ȃ��̂Ńj���[�g����
+					: new TackPoint();
 
 				for (int i2 = 0; i2 < nowTack.span_; i2++)
 				{
@@ -223,7 +213,6 @@ namespace NKKD.EDIT
 			return res;
 		}
 
-		//�e��^�C�����C��
 		public List<MotionTackPos> ConvertMotionPos()
 		{
 			List<MotionTackPos> res = new List<MotionTackPos>();
@@ -512,7 +501,6 @@ namespace NKKD.EDIT
 			menu.ShowAsContext();
 		}
 
-		//�E�N���b�N���j���[�̉s��
 		bool IsEnableEvent(OnTrackEvent.EventType eventType, int frame)
 		{
 			switch (eventType)

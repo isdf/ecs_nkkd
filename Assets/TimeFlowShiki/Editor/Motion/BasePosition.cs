@@ -6,20 +6,22 @@ namespace NKKD.EDIT
 	public static class BasePosition
 	{
 		public static readonly int GROUND_Y = 7; //脚の地面からのドット数
-		public static readonly int CORE_Y = 7; //体の中心
+		public static readonly int CORE_Y = 9; //体の中心
 		public static readonly int HEAD_Y = 7;
 		public static readonly int ANT_Y = 11;
 		public static readonly int ARM_X = 2;
-		public static readonly int HAND_X = 4;
+		public static readonly int ARM_Y = 10;
+		public static readonly int HAND_X = 2;
+		public static readonly int HAND_Y = 7;
 		public static readonly int LEG_X = 2;
-		public static readonly int LEG_Y = 7;
+		public static readonly int LEG_Y = 5;
 		public static readonly int FOOT_X = 2;
 		public static readonly Vector2Int BODY_BASE = new Vector2Int(0, CORE_Y);
 		public static readonly Vector2Int HEAD_BASE = new Vector2Int(0, (CORE_Y + HEAD_Y));
-		public static readonly Vector2Int L_ARM_BASE = new Vector2Int(ARM_X, CORE_Y);
-		public static readonly Vector2Int R_ARM_BASE = new Vector2Int(-ARM_X, CORE_Y);
-		public static readonly Vector2Int L_HAND_BASE = new Vector2Int(HAND_X, CORE_Y);
-		public static readonly Vector2Int R_HAND_BASE = new Vector2Int(-HAND_X, CORE_Y);
+		public static readonly Vector2Int L_ARM_BASE = new Vector2Int(ARM_X, ARM_Y);
+		public static readonly Vector2Int R_ARM_BASE = new Vector2Int(-ARM_X, ARM_Y);
+		public static readonly Vector2Int L_HAND_BASE = new Vector2Int(HAND_X, HAND_Y);
+		public static readonly Vector2Int R_HAND_BASE = new Vector2Int(-HAND_X, HAND_Y);
 		public static readonly Vector2Int L_LEG_BASE = new Vector2Int(LEG_X, LEG_Y);
 		public static readonly Vector2Int R_LEG_BASE = new Vector2Int(-LEG_X, LEG_Y);
 		public static readonly Vector2Int L_FOOT_BASE = new Vector2Int(FOOT_X, GROUND_Y);
@@ -28,17 +30,17 @@ namespace NKKD.EDIT
 
 		public static readonly List<int> FRONT_DEPTH = new List<int>
 			{
-				(int)enPartsType.LeftHand,
 				(int)enPartsType.LeftArm,
-				(int)enPartsType.LeftFoot,
+				(int)enPartsType.LeftHand,
 				(int)enPartsType.LeftLeg,
+				(int)enPartsType.LeftFoot,
 				(int)enPartsType.Body,
 				(int)enPartsType.Head,
 				(int)enPartsType.Ant,
-				(int)enPartsType.RightFoot,
 				(int)enPartsType.RightLeg,
-				(int)enPartsType.RightHand,
+				(int)enPartsType.RightFoot,
 				(int)enPartsType.RightArm,
+				(int)enPartsType.RightHand,
 			};
 		public static readonly List<int> BACK_DEPTH = new List<int>
 			{

@@ -85,7 +85,6 @@ namespace NKKD.EDIT
 			this.index_ = index;
 
 			this.IsExistTack_ = true;
-			//���f�[�^�ǉ��̍ۂ̓R�R�ɒǉ�
 			//this.title_ = timelineTacksDict[TimeFlowShikiSettings.TIMEFLOWSHIKI_DATA_TACK_TITLE] as string;
 			this.start_ = Convert.ToInt32(timelineTacksDict[TimeFlowShikiSettings.TIMEFLOWSHIKI_DATA_TACK_START]);
 			this.span_ = Convert.ToInt32(timelineTacksDict[TimeFlowShikiSettings.TIMEFLOWSHIKI_DATA_TACK_SPAN]);
@@ -93,7 +92,6 @@ namespace NKKD.EDIT
 
 			string dictToStr = "";
 
-			//�e��^�C�����C��
 			switch ((TimelineType)this.timelineType_)
 			{
 				case TimelineType.TL_POS:
