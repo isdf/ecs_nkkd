@@ -1,21 +1,24 @@
-﻿using UnityEngine;
-using UnityEditor;
-
-using System;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Collections.Generic;
+using UnityEditor;
+using UnityEngine;
 
-namespace NKKD.EDIT {
+namespace NKKD.EDIT
+{
 	//[SerializeField]
-	public partial class ARIMotionSubWindow : EditorWindow {
+	public partial class ARIMotionSubWindow : EditorWindow
+	{
 
-		public class PartsObject {
+		public class PartsObject
+		{
 			public enPartsType partsType;
 			public Vector2Int pos;
 			public PartsTransformState partsTransform;
 
-			public PartsObject(enPartsType partsType) {
+			public PartsObject(enPartsType partsType)
+			{
 				this.partsType = partsType;
 			}
 		}
@@ -25,9 +28,8 @@ namespace NKKD.EDIT {
 		//[SerializeField]
 		//SubWindowInspector subWindowInspector;
 
-
-
-		enum enFocusObject {
+		enum enFocusObject
+		{
 			focusTack,
 			focusTimeline,
 			focusScore,
@@ -37,7 +39,7 @@ namespace NKKD.EDIT {
 		const int GRIDSIZE_Z = 8;
 		const int TIPSIZE = 24;
 		const int MAXPOS = 32;
-		const int MAXMAG = 8;
+		const int MAXMAG = 16;
 		const int MINMAG = 2;
 		int mag_ = (MAXMAG / 2);
 		[SerializeField]
@@ -48,10 +50,9 @@ namespace NKKD.EDIT {
 		Vector2 mouseStPos_;
 		bool isRepaint_;
 
-
 		Dictionary<enPartsType, PartsObject> partsObjects_ = new Dictionary<enPartsType, PartsObject>();
-		MotionState sendMotion_;//シーンに移すデータ
-		Vector2 tempMovePos_;//位置移動反映
+		MotionState sendMotion_; //シーンに移すデータ
+		Vector2 tempMovePos_; //位置移動反映
 
 		enFocusObject focusObject_;
 		TimelineType timelineType_;
@@ -67,13 +68,14 @@ namespace NKKD.EDIT {
 		MotionPos clipPos_;
 		bool isSabunPos_;
 
-
-		public void OnEnable() {
+		public void OnEnable()
+		{
 
 			InitializeSubWindowView();
 		}
 
-		void InitializeSubWindowView() {
+		void InitializeSubWindowView()
+		{
 			this.titleContent = new GUIContent("TimeFlowSub");
 
 			this.wantsMouseMove = true;
@@ -81,7 +83,8 @@ namespace NKKD.EDIT {
 		}
 
 		// サブウィンドウを開く
-		public static ARIMotionSubWindow ShowEditor(ARIMotionMainWindow parent) {
+		public static ARIMotionSubWindow ShowEditor(ARIMotionMainWindow parent)
+		{
 			ARIMotionSubWindow window = EditorWindow.GetWindow<ARIMotionSubWindow>();
 			window.Show();
 			//window.minSize = new Vector2Int(WINDOW_W, WINDOW_H);
@@ -90,24 +93,28 @@ namespace NKKD.EDIT {
 			return window;
 		}
 
-		void SetParent(ARIMotionMainWindow parent) {
+		void SetParent(ARIMotionMainWindow parent)
+		{
 			this.parent_ = parent;
 		}
 
 		// サブウィンドウの初期化
-		public void init() {
-			wantsMouseMove = true;   // マウス情報を取得.
+		public void init()
+		{
+			wantsMouseMove = true; // マウス情報を取得.
 			isRepaint_ = true;
-			foreach (enPartsType item in Enum.GetValues(typeof(enPartsType))) {
+			foreach (enPartsType item in Enum.GetValues(typeof(enPartsType)))
+			{
 				isMultiParts_[item] = false;
 				multiOffset_[item] = Vector2Int.zero;
 			}
 		}
 
-
-		void OnGUI() {
+		void OnGUI()
+		{
 			//親閉じたら閉じる
-			if (parent_ == null) {
+			if (parent_ == null)
+			{
 				Close();
 				return;
 			}
@@ -126,28 +133,33 @@ namespace NKKD.EDIT {
 
 		}
 
-
 		//現在メイン窓で選択中の項目
-		void SwitchEditType() {
+		void SwitchEditType()
+		{
 			var activeScore = parent_.GetActiveScore();
-			if (activeScore.IsActiveTackPoint()) {
+			if (activeScore.IsActiveTackPoint())
+			{
 				SelectedTack();
 			}
-			else if (activeScore.IsActiveTimeline()) {
+			else if (activeScore.IsActiveTimeline())
+			{
 				SelectedTimeline();
 			}
-			else {
+			else
+			{
 				SelectedScore();
 			}
 		}
 
 		//スコア選択中
-		void SelectedScore() {
+		void SelectedScore()
+		{
 
 			//違うタックが選ばれた
 			if ((focusObject_ != enFocusObject.focusScore)
 				|| ((selectedFrame_ != parent_.scoreWindow_.GetSelectedFrame()))
-				|| (lastScoreId_ != parent_.GetActiveScore().id_)) {
+				|| (lastScoreId_ != parent_.GetActiveScore().id_))
+			{
 				//Undoクリア
 				ARIMotionMainWindow.tackCmd_.Clear();
 				//タイムラインに応じた位置
@@ -163,10 +175,12 @@ namespace NKKD.EDIT {
 			//SetupPartsData();//座標、トランスフォーム変化
 		}
 		//タイムライン選択中
-		void SelectedTimeline() {
+		void SelectedTimeline()
+		{
 
 			//違うタックが選ばれた
-			if (focusObject_ != enFocusObject.focusTimeline) {
+			if (focusObject_ != enFocusObject.focusTimeline)
+			{
 				//Undoクリア
 				ARIMotionMainWindow.tackCmd_.Clear();
 
@@ -179,7 +193,8 @@ namespace NKKD.EDIT {
 			}
 		}
 		//タック選択中
-		void SelectedTack() {
+		void SelectedTack()
+		{
 			//あとまわし
 			//タックの種類によって持ってくるデータが違う
 
@@ -187,7 +202,8 @@ namespace NKKD.EDIT {
 			//違うタックが選ばれた
 			if ((focusObject_ != enFocusObject.focusTack)
 				|| ((activeTack.tackId_ != lastTackId_)
-				|| (activeTack.parentTimelineId_ != lastParentTimelineId_))) {
+					|| (activeTack.parentTimelineId_ != lastParentTimelineId_)))
+			{
 				//Undoクリア
 				ARIMotionMainWindow.tackCmd_.Clear();
 
@@ -196,7 +212,7 @@ namespace NKKD.EDIT {
 				lastParentTimelineId_ = activeTack.parentTimelineId_;
 				lastTackId_ = activeTack.tackId_;
 				focusObject_ = enFocusObject.focusTack;
-				selectedFrame_ = (activeTack.start_ + activeTack.span_ - 1);//タック末端
+				selectedFrame_ = (activeTack.start_ + activeTack.span_ - 1); //タック末端
 
 				SetupPartsData(false);
 
@@ -204,42 +220,47 @@ namespace NKKD.EDIT {
 		}
 
 		//遅延命令
-		public void Emit(OnTrackEvent onTrackEvent) {
+		public void Emit(OnTrackEvent onTrackEvent)
+		{
 
 			var type = onTrackEvent.eventType;
 			// tack events.
-			switch (type) {
-				case OnTrackEvent.EventType.EVENT_PARTS_MOVED: {
-					//Undo.RecordObject(this, "Parts Moved");
-					//Debug.Log("Parts Moved");
-					parent_.NeedSave();
-					return;
-				}
-				case OnTrackEvent.EventType.EVENT_PARTS_COPY: {
-					var activeTack = parent_.GetActiveScore().GetActiveTackPoint();
-					clipPos_ = activeTack.motionData_.mPos;
+			switch (type)
+			{
+				case OnTrackEvent.EventType.EVENT_PARTS_MOVED:
+					{
+						//Undo.RecordObject(this, "Parts Moved");
+						//Debug.Log("Parts Moved");
+						parent_.NeedSave();
+						return;
+					}
+				case OnTrackEvent.EventType.EVENT_PARTS_COPY:
+					{
+						var activeTack = parent_.GetActiveScore().GetActiveTackPoint();
+						clipPos_ = activeTack.motionData_.mPos;
 
-					return;
-				}
-				case OnTrackEvent.EventType.EVENT_PARTS_PASTE: {
-					Undo.RecordObject(this, "Parts Paste");
-					var activeTack = parent_.GetActiveScore().GetActiveTackPoint();
-					activeTack.motionData_.mPos = clipPos_;
-					SetupPartsData(true);
-					return;
-				}
-				default: {
-					//親に投げる
-					ParentEmit(onTrackEvent);
-					break;
-				}
+						return;
+					}
+				case OnTrackEvent.EventType.EVENT_PARTS_PASTE:
+					{
+						Undo.RecordObject(this, "Parts Paste");
+						var activeTack = parent_.GetActiveScore().GetActiveTackPoint();
+						activeTack.motionData_.mPos = clipPos_;
+						SetupPartsData(true);
+						return;
+					}
+				default:
+					{
+						//親に投げる
+						ParentEmit(onTrackEvent);
+						break;
+					}
 			}
 		}
 
-
-
 		//現在の選択フレームの状態を各パーツに移す
-		public void SetupPartsData(bool isChange) {
+		public void SetupPartsData(bool isChange)
+		{
 			//各種タイムライン
 			SetupPartsPos();
 			SetupPartsTransform();
@@ -253,14 +274,15 @@ namespace NKKD.EDIT {
 			StateToPartsObject();
 			RefreshMotionManager();
 
-
 			isRepaint_ = true;
 
-			if (isChange) Emit(new OnTrackEvent(OnTrackEvent.EventType.EVENT_PARTS_MOVED, null));
+			if (isChange)Emit(new OnTrackEvent(OnTrackEvent.EventType.EVENT_PARTS_MOVED, null));
 		}
 
-		void StateToPartsObject() {
-			foreach (enPartsType item in Enum.GetValues(typeof(enPartsType))) {
+		void StateToPartsObject()
+		{
+			foreach (enPartsType item in Enum.GetValues(typeof(enPartsType)))
+			{
 				GetPartsObject(item).pos = sendMotion_.stPos.GetPos(item) + BasePosition.GetPosEdit(item, false);
 				GetPartsObject(item).partsTransform = sendMotion_.stTransform.GetTransform(item);
 			}
@@ -273,7 +295,6 @@ namespace NKKD.EDIT {
 		//	//反転が入っている場合は左右があるパーツは、X位置を反転させ、逆側の基礎位置を使用する
 		//	if (motionHold.mirror) pos.x = -pos.x;
 		//	//回転が入っている場合は基礎位置設定後、原点パーツが原点になるように移動させ、原点を中心に回転し、移動させた分をそのまま戻す
-
 
 		//	pos += BasePosition.GetPosEdit(partsType, motionHold.mirror);
 		//	//HOLDは足下原点ではなく、ボディ原点にする
@@ -301,14 +322,15 @@ namespace NKKD.EDIT {
 
 		//}
 
-		void SetupPartsPos() {
+		void SetupPartsPos()
+		{
 			//Pos
 			var selectedFrameAndPrevPos = parent_.GetActiveScore().GetSelectedFrameAndPrevPos(selectedFrame_);
-			if (selectedFrameAndPrevPos.Count == 0) return;
+			if (selectedFrameAndPrevPos.Count == 0)return;
 
 			TackPoint prevTack = (selectedFrameAndPrevPos.Count == 2)
 				? selectedFrameAndPrevPos[1]
-				: new TackPoint();//最初のタックは前がないのでニュートラル
+				: new TackPoint(); //最初のタックは前がないのでニュートラル
 
 			TackPoint selectedTack = selectedFrameAndPrevPos[0];
 
@@ -320,28 +342,30 @@ namespace NKKD.EDIT {
 
 			sendMotion_.stPos = intermediate;
 		}
-		void SetupPartsTransform() {
+		void SetupPartsTransform()
+		{
 			//MotionTransform latestTransform = parent_.GetActiveScore().GetLatestTransform(selectedFrame_);
 			//sendMotion_.stTransform.InportMotion(latestTransform, selectedFrame_);
 		}
 
-
 		//現在の選択フレームの位置移動状態算出
-		void SetupPartsMove() {
+		void SetupPartsMove()
+		{
 			tempMovePos_ = Vector2Int.zero;
 
-			if (focusObject_ != enFocusObject.focusScore) return;
+			if (focusObject_ != enFocusObject.focusScore)return;
 
-			if (!parent_.scoreWindow_.isMovePos_) return;
+			if (!parent_.scoreWindow_.isMovePos_)return;
 
 			//Move
 			var untilSelectedFrameMove = parent_.GetActiveScore().GetUntilSelectedFrameMove(selectedFrame_);
-			if (untilSelectedFrameMove == null) return;
-			if (untilSelectedFrameMove.Count == 0) return;
+			if (untilSelectedFrameMove == null)return;
+			if (untilSelectedFrameMove.Count == 0)return;
 
 			Vector2 nowSpeed = Vector2.zero;
 
-			for (int i = 0; i < selectedFrame_; i++) {
+			for (int i = 0; i < selectedFrame_; i++)
+			{
 				var nowTack = untilSelectedFrameMove
 					.Where(t => t.IsExistTack_)
 					.Where(t => (t.start_ <= i))
@@ -350,12 +374,14 @@ namespace NKKD.EDIT {
 
 				float ACCTIME = (1f / (float)ARIMotionMainWindow.FPS);
 
-				if (nowTack != null) {
+				if (nowTack != null)
+				{
 					//そのタックに入ったフレーム
-					if (i == nowTack.start_) {
+					if (i == nowTack.start_)
+					{
 						//初速の書き換え
-						if (!nowTack.motionData_.mMove.isKeepX) nowSpeed.x = nowTack.motionData_.mMove.delta.x;
-						if (!nowTack.motionData_.mMove.isKeepY) nowSpeed.y = nowTack.motionData_.mMove.delta.y;
+						if (!nowTack.motionData_.mMove.isKeepX)nowSpeed.x = nowTack.motionData_.mMove.delta.x;
+						if (!nowTack.motionData_.mMove.isKeepY)nowSpeed.y = nowTack.motionData_.mMove.delta.y;
 					}
 
 					//タック内
@@ -363,7 +389,8 @@ namespace NKKD.EDIT {
 					nowSpeed.y += (nowTack.motionData_.mMove.accel.y * ACCTIME);
 
 					//ブレーキ
-					if (nowTack.motionData_.mMove.decelMag > 0) {
+					if (nowTack.motionData_.mMove.decelMag > 0)
+					{
 						//正規化された現在の速度に摩擦倍率
 						Vector3 revVelocity = nowSpeed.normalized * nowTack.motionData_.mMove.decelMag;
 
@@ -380,7 +407,6 @@ namespace NKKD.EDIT {
 						nowSpeed.y = newY;
 					}
 
-
 					////浮いてるときだけ重力
 					//if ((tempMovePos_.y < 0) && !nowTack.motionData_.mMove.isZeroGrv) {
 					//	nowSpeed.y += (MoveDefine.main.gravity_ * ACCTIME);
@@ -390,11 +416,10 @@ namespace NKKD.EDIT {
 				//位置変更
 				tempMovePos_.x += nowSpeed.x;
 				tempMovePos_.y -= nowSpeed.y;
-				if (tempMovePos_.y > 0) tempMovePos_.y = 0;//地面
+				if (tempMovePos_.y > 0)tempMovePos_.y = 0; //地面
 
 			}
 		}
-
 
 		////当たり判定
 		//void SetupPartsAtari()
@@ -426,69 +451,81 @@ namespace NKKD.EDIT {
 		//}
 
 		//アニメーション
-		void SetupPartsColor() {
+		void SetupPartsColor()
+		{
 			var aniTack = parent_.GetActiveScore().GetSelectedFrame(selectedFrame_, TimelineType.TL_COLOR);
-			if (aniTack == null) {
+			if (aniTack == null)
+			{
 				sendMotion_.stColor.isActive = false;
 			}
-			else {
+			else
+			{
 				int frame = (selectedFrame_ - aniTack.start_);
 				sendMotion_.stColor.Inportmotion(aniTack.motionData_.mColor, frame);
 			}
 		}
 
 		//エフェクト
-		void SetupPartsEffect() {
+		void SetupPartsEffect()
+		{
 			var effectTack = parent_.GetActiveScore().GetSelectedFrame(selectedFrame_, TimelineType.TL_EFFECT);
-			if (effectTack == null) {
+			if (effectTack == null)
+			{
 				sendMotion_.stEffect.isActive = false;
 			}
-			else {
+			else
+			{
 				sendMotion_.stEffect.InportMotion(effectTack.motionData_.mEffect);
 			}
 		}
 
 		//状態
-		void SetupPartsPassive() {
+		void SetupPartsPassive()
+		{
 			var passiveTack = parent_.GetActiveScore().GetSelectedFrame(selectedFrame_, TimelineType.TL_PASSIVE);
-			if (passiveTack != null) {
+			if (passiveTack != null)
+			{
 				sendMotion_.stPassive.InportMotion(passiveTack.motionData_.mPassive);
 			}
 		}
 
-
-
-		void ClearSelectedParts() {
-			foreach (enPartsType item in Enum.GetValues(typeof(enPartsType))) {
+		void ClearSelectedParts()
+		{
+			foreach (enPartsType item in Enum.GetValues(typeof(enPartsType)))
+			{
 				isMultiParts_[item] = false;
 				multiOffset_[item] = Vector2Int.zero;
 			}
 		}
 
-		bool IsSelectedParts() {
+		bool IsSelectedParts()
+		{
 			return isMultiParts_.Where(m => m.Value).Any();
 		}
 
 		//サブウインドウの編集情報をタックに送る
 
-
-
 		//ポジション少数丸め
-		Vector2Int RoundPosVector(Vector2 pos) {
+		Vector2Int RoundPosVector(Vector2 pos)
+		{
 			return new Vector2Int((int)pos.x, (int)pos.y);
 		}
 
 		//サブウインドウのパーツオブジェクト取得
-		PartsObject GetPartsObject(enPartsType partsType) {
-			if (!partsObjects_.ContainsKey(partsType)) partsObjects_[partsType] = new PartsObject(partsType);
+		PartsObject GetPartsObject(enPartsType partsType)
+		{
+			if (!partsObjects_.ContainsKey(partsType))partsObjects_[partsType] = new PartsObject(partsType);
 			return partsObjects_[partsType];
 		}
 
 		//シーンにタック情報を反映
-		void RefreshMotionManager() {
-			try {
+		void RefreshMotionManager()
+		{
+			try
+			{
 				//あとまわしとりあえずPOSのみ
-				switch (focusObject_) {
+				switch (focusObject_)
+				{
 					case enFocusObject.focusScore:
 					case enFocusObject.focusTack:
 						//parent_.charManager_.motionManager.SetMotionDataFromEditor(sendMotion_);
@@ -497,12 +534,12 @@ namespace NKKD.EDIT {
 						break;
 				}
 			}
-			catch {
+			catch
+			{
 
 			}
 
 		}
-
 
 	}
 }

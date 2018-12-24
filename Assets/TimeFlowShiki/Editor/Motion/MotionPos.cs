@@ -36,14 +36,17 @@ namespace NKKD.EDIT
 			switch (curve)
 			{
 				case enCurve.Normal:
-					if (isAnt)
-					{
-						edPer = Mathf.Pow(frame, 6);
-					}
-					else
-					{
-						edPer = frame;
-					}
+					//アンテナを浮かせたい時はこっちで
+					// if (isAnt)
+					// {
+					// 	edPer = Mathf.Pow(frame, 6);
+					// }
+					// else
+					// {
+					// 	edPer = frame;
+					// }
+
+					edPer = frame;
 
 					break;
 				case enCurve.SinCurve:
@@ -94,8 +97,9 @@ namespace NKKD.EDIT
 
 			foreach (enPartsType item in Enum.GetValues(typeof(enPartsType)))
 			{
-				float posx = IntermediateCurve(frame, edPos.GetCurveX(item), stPos.GetPos(item).x, edPos.GetPos(item).x, (item == enPartsType.Ant));
-				float posy = IntermediateCurve(frame, edPos.GetCurveY(item), stPos.GetPos(item).y, edPos.GetPos(item).y, (item == enPartsType.Ant));
+				var isAnt = (item == enPartsType.Ant);
+				float posx = IntermediateCurve(frame, edPos.GetCurveX(item), stPos.GetPos(item).x, edPos.GetPos(item).x, isAnt);
+				float posy = IntermediateCurve(frame, edPos.GetCurveY(item), stPos.GetPos(item).y, edPos.GetPos(item).y, isAnt);
 				res.SetPos(item, new Vector2Int(
 					(int)Math.Round(posx),
 					(int)Math.Round(posy)));

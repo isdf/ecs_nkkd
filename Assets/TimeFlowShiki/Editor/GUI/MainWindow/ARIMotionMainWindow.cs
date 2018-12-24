@@ -854,23 +854,25 @@ namespace NKKD.EDIT
 					break;
 				case enPartsType.LeftArm:
 				case enPartsType.RightArm:
-				case enPartsType.LeftLeg:
-				case enPartsType.RightLeg:
 					typeNo = 1;
 					break;
 				case enPartsType.LeftHand:
 				case enPartsType.RightHand:
 					typeNo = 2;
 					break;
-				case enPartsType.LeftFoot:
-				case enPartsType.RightFoot:
+				case enPartsType.LeftLeg:
+				case enPartsType.RightLeg:
 					typeNo = 3;
 					break;
-				case enPartsType.Head:
+				case enPartsType.LeftFoot:
+				case enPartsType.RightFoot:
 					typeNo = 4;
 					break;
-				case enPartsType.Ant:
+				case enPartsType.Head:
 					typeNo = 5;
+					break;
+				case enPartsType.Ant:
+					typeNo = 6;
 					break;
 				default:
 					Debug.LogError("other partsType_");

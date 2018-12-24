@@ -49,11 +49,13 @@ namespace NKKD
 
 			//スクリプタブルオブジェクトの読み込み
 			aniScriptSheet = new AniScriptSheet();
-			if (Resources.FindObjectsOfTypeAll<AniScriptSheetObject>().Length == 0)Debug.LogError("aniScriptSheet 0");
+			if (Resources.FindObjectsOfTypeAll<AniScriptSheetObject>().Length == 0)
+				Debug.LogError("aniScriptSheet 0");
 			aniScriptSheet.scripts = (Resources.FindObjectsOfTypeAll<AniScriptSheetObject>().First()as AniScriptSheetObject).scripts;
 
 			aniBasePos = new AniBasePos();
-			if (Resources.FindObjectsOfTypeAll<AniBasePosObject>().Length == 0)Debug.LogError("aniBasePos 0");
+			if (Resources.FindObjectsOfTypeAll<AniBasePosObject>().Length == 0)
+				Debug.LogError("aniBasePos 0");
 			aniBasePos = (Resources.FindObjectsOfTypeAll<AniBasePosObject>().First()as AniBasePosObject).aniBasePos;
 		}
 

@@ -10,6 +10,9 @@ namespace NKKD.EDIT
 {
 	public partial class ARIMotionSubWindow : EditorWindow
 	{
+		//パーツ選択の判定範囲
+		const float SELECT_PARTS_SIZE = 1f;
+
 		///<summary>入力イベント</summary>
 		private void HandlingEvent()
 		{
@@ -36,8 +39,8 @@ namespace NKKD.EDIT
 							SelectParts(); //posは複数選択可能
 							SelectPartsAll();
 							SelectPartsKey();
-							ChangePos();
 							ChangePosKey();
+							ChangePos();
 							break;
 						case TimelineType.TL_TRANSFORM:
 							SelectParts();
@@ -190,9 +193,12 @@ namespace NKKD.EDIT
 			}
 		}
 
+		///<summary>左クリックパーツ選択</summary>
 		private void SelectParts()
 		{
-			if (Event.current.button != 0)return;
+			if (Event.current.button != 0)
+				return;
+
 			Vector2 mousePos = (Event.current.mousePosition / mag_) - camPos_;
 			//Yは反転
 			mousePos.y = -mousePos.y;
@@ -200,17 +206,14 @@ namespace NKKD.EDIT
 			if (Event.current.type == EventType.MouseDown)
 			{
 				enPartsType partsType = enPartsType._END;
-				Debug.Log(mousePos);
 				foreach (enPartsType item in Enum.GetValues(typeof(enPartsType)))
 				{
 
-					Vector2Int itemPos = GetPartsObject(item).pos;
-					// Debug.Log(item.ToString() + itemPos.ToString());
-					const int SIZE = 1;
-					if ((mousePos.x > (itemPos.x - SIZE))
-						&& (mousePos.x < (itemPos.x + SIZE))
-						&& (mousePos.y > (itemPos.y - SIZE))
-						&& (mousePos.x < (itemPos.y + SIZE))
+					Vector2 itemPos = GetPartsObject(item).pos;
+					if ((mousePos.x > (itemPos.x - SELECT_PARTS_SIZE))
+						&& (mousePos.x < (itemPos.x + SELECT_PARTS_SIZE))
+						&& (mousePos.y > (itemPos.y - SELECT_PARTS_SIZE))
+						&& (mousePos.y < (itemPos.y + SELECT_PARTS_SIZE))
 					)
 					{
 						partsType = item;
@@ -220,9 +223,7 @@ namespace NKKD.EDIT
 
 				foreach (enPartsType item in Enum.GetValues(typeof(enPartsType)))
 				{
-					isMultiParts_[item] = (partsType != item)
-						? false
-						: !isMultiParts_[item];
+					isMultiParts_[item] = (partsType == item);
 					multiOffset_[item] = Vector2Int.zero;
 				}
 				isRepaint_ = true;
@@ -231,7 +232,7 @@ namespace NKKD.EDIT
 			}
 		}
 
-		///<summary>パーツ選択</summary>
+		///<summary>キーパーツ選択</summary>
 		private void SelectPartsKey()
 		{
 

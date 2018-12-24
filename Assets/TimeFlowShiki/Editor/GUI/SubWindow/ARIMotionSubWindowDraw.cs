@@ -9,6 +9,8 @@ namespace NKKD.EDIT
 {
 	public partial class ARIMotionSubWindow
 	{
+		const float GIZMO_SIZE = 1f;
+
 		///<summary>描画</summary>
 		void DrawAutoConponent()
 		{
@@ -18,7 +20,7 @@ namespace NKKD.EDIT
 			if (isRepaint_)Repaint();
 		}
 
-		/// <summary>キャラ描画</summary>
+		///<summary>キャラ描画</summary>
 		void DrawChar()
 		{
 			DrawPartsAll();
@@ -88,7 +90,7 @@ namespace NKKD.EDIT
 
 		}
 
-		/// <summary>グリッド線を描画</summary>
+		///<summary>グリッド線を描画</summary>
 		void DrawGridLine3()
 		{
 			// grid
@@ -169,14 +171,34 @@ namespace NKKD.EDIT
 				if (focusObject_ == enFocusObject.focusTack)
 				{
 					foreach (var item in drawList)
-						if (!isMultiParts_[item])DrawParts(item, false); //非選択
+					{
+						if (!isMultiParts_[item])
+							DrawParts(item, false); //非選択
+					}
 					foreach (var item in drawList)
-						if (isMultiParts_[item])DrawParts(item, false); //選択
+					{
+						if (isMultiParts_[item])
+							DrawParts(item, false); //選択
+					}
 				}
 				else
 				{
-					foreach (var item in drawList)DrawParts(item, false);
+					foreach (var item in drawList)
+					{
+						DrawParts(item, false);
+					}
 				}
+
+				//パーツギズモ
+				foreach (var item in drawList)
+				{
+					DrawPartsGizmoPoint(item);
+				}
+
+				//パーツギズモ
+
+				DrawPartsGizmoLine(drawList);
+
 			}
 			catch
 			{
@@ -218,18 +240,12 @@ namespace NKKD.EDIT
 			return res;
 		}
 
-		/// <summary>各パーツ描画</summary>
+		///<summary>各パーツ描画</summary>
 		void DrawParts(enPartsType partsType, bool isLabel)
 		{
 			PartsObject partsObject = GetPartsObject(partsType);
-
 			Vector2 pos = partsObject.pos;
-
-			//if (partsType == enPartsType.Head) {
-			//	Debug.Log(pos);
-			//}
 			pos.y = -pos.y; //上下反転
-			//bool isLeft = partsObject.partsTransform.isLeft;
 
 			Sprite sp = parent_.GetSprite(partsType, sendMotion_.stPassive.isBack, sendMotion_.stPassive.faceNo);
 			if (sp != null)
@@ -279,11 +295,161 @@ namespace NKKD.EDIT
 				// RotateAroundPivot等は行列の掛け算なので、一旦初期値に戻す
 				GUI.matrix = Matrix4x4.identity;
 				GUI.color = new Color(1, 1, 1);
+
+				var rectPos = drawPos * MAG;
+				rectPos.x += drawRect.width / 2;
+				rectPos.y += drawRect.height / 2;
+
 			}
 
 		}
 
-		/// <summary>パーツラベル描画</summary>
+		///<summary>各パーツのギズモ描画</summary>
+		void DrawPartsGizmoPoint(enPartsType partsType)
+		{
+			PartsObject partsObject = GetPartsObject(partsType);
+
+			Vector2 pos = partsObject.pos;
+
+			pos.y = -pos.y; //上下反転
+
+			Sprite sp = parent_.GetSprite(partsType, sendMotion_.stPassive.isBack, sendMotion_.stPassive.faceNo);
+			if (sp != null)
+			{
+				Vector2 basepos = new Vector2(-sp.pivot.x, +sp.pivot.y - sp.rect.height);
+				Vector2 size = new Vector2(sp.rect.width, sp.rect.height);
+
+				int MAG = mag_;
+				Vector2 drawPos = (basepos + camPos_ + pos + tempMovePos_);
+				Rect drawRect = new Rect(drawPos * MAG, size * MAG);
+				Handles.color = new Color(1, 1, 1);
+				switch (partsType)
+				{
+					case enPartsType.LeftArm:
+					case enPartsType.LeftHand:
+					case enPartsType.LeftLeg:
+					case enPartsType.LeftFoot:
+						Handles.color = new Color(0, 1, 1);
+						break;
+					case enPartsType.RightArm:
+					case enPartsType.RightHand:
+					case enPartsType.RightLeg:
+					case enPartsType.RightFoot:
+						Handles.color = new Color(1, 0, 1);
+						break;
+				}
+
+				var rectPos = drawPos;
+				rectPos.x += sp.rect.width / 2;
+				rectPos.y += sp.rect.height / 2;
+
+				Handles.DrawRectangle((int)partsType, rectPos * MAG, Quaternion.identity, GIZMO_SIZE * MAG);
+				// Handles.DrawLine(drawPos * MAG, drawPos * MAG * 2);
+
+			}
+
+		}
+
+		///<summary>各パーツのギズモ描画</summary>
+		void DrawPartsGizmoLine(List<enPartsType> drawList)
+		{
+
+			foreach (var partsType in drawList)
+			{
+
+				if (partsType == enPartsType.Body)
+					continue;
+
+				enPartsType targetPartsType = enPartsType.Body;
+				switch (partsType)
+				{
+					case enPartsType.Ant:
+						targetPartsType = enPartsType.Head;
+						break;
+					case enPartsType.LeftFoot:
+						targetPartsType = enPartsType.LeftLeg;
+						break;
+					case enPartsType.RightFoot:
+						targetPartsType = enPartsType.RightLeg;
+						break;
+					case enPartsType.LeftHand:
+						targetPartsType = enPartsType.LeftArm;
+						break;
+					case enPartsType.RightHand:
+						targetPartsType = enPartsType.RightArm;
+						break;
+				}
+
+				PartsObject partsObject = GetPartsObject(partsType);
+				PartsObject targetObject = GetPartsObject(targetPartsType);
+
+				Vector2 pos = partsObject.pos;
+				Vector2 targetPos = targetObject.pos;
+
+				pos.y = -pos.y; //上下反転
+				targetPos.y = -targetPos.y; //上下反転
+
+				Sprite sp = parent_.GetSprite(partsType, sendMotion_.stPassive.isBack, sendMotion_.stPassive.faceNo);
+				Sprite targetsp = parent_.GetSprite(targetPartsType, sendMotion_.stPassive.isBack, sendMotion_.stPassive.faceNo);
+				if ((sp != null) && (targetsp != null))
+				{
+					Vector2 basepos = new Vector2(-sp.pivot.x, +sp.pivot.y - sp.rect.height);
+					Vector2 size = new Vector2(sp.rect.width, sp.rect.height);
+
+					int MAG = mag_;
+					Vector2 drawPos = (basepos + camPos_ + pos + tempMovePos_);
+					drawPos.x += sp.rect.width / 2;
+					drawPos.y += sp.rect.height / 2;
+					Vector2 drawTargetPos = (basepos + camPos_ + targetPos + tempMovePos_);
+					drawTargetPos.x += targetsp.rect.width / 2;
+					drawTargetPos.y += targetsp.rect.height / 2;
+
+					switch (partsType)
+					{
+						case enPartsType.LeftArm:
+							drawTargetPos.x += GIZMO_SIZE;
+							drawTargetPos.y -= GIZMO_SIZE;
+							break;
+						case enPartsType.RightArm:
+							drawTargetPos.x -= GIZMO_SIZE;
+							drawTargetPos.y -= GIZMO_SIZE;
+							break;
+						case enPartsType.LeftLeg:
+							drawTargetPos.x += GIZMO_SIZE;
+							drawTargetPos.y += GIZMO_SIZE;
+							break;
+						case enPartsType.RightLeg:
+							drawTargetPos.x -= GIZMO_SIZE;
+							drawTargetPos.y += GIZMO_SIZE;
+							break;
+					}
+
+					Handles.color = new Color(1, 1, 0);
+					switch (partsType)
+					{
+						case enPartsType.LeftArm:
+						case enPartsType.LeftHand:
+						case enPartsType.LeftLeg:
+						case enPartsType.LeftFoot:
+							Handles.color = new Color(0, 1, 1);
+							break;
+						case enPartsType.RightArm:
+						case enPartsType.RightHand:
+						case enPartsType.RightLeg:
+						case enPartsType.RightFoot:
+							Handles.color = new Color(1, 0, 1);
+							break;
+					}
+
+					Handles.DrawLine(drawPos * MAG, drawTargetPos * MAG);
+
+				}
+
+			}
+
+		}
+
+		///<summary>パーツラベル描画</summary>
 		void DrawPartsLabel()
 		{
 			List<enPartsType> drawList = BasePosition.GenGetZSortList(sendMotion_.stPassive.isLeft, sendMotion_.stPassive.isBack);
