@@ -7,8 +7,7 @@ namespace NKKD.EDIT
 	public struct MotionPosState
 	{
 		public Vector2Int headPos;
-		public Vector2Int thoraxPos;
-		public Vector2Int gasterPos;
+		public Vector2Int bodyPos;
 		public Vector2Int leftArmPos;
 		public Vector2Int rightArmPos;
 		public Vector2Int leftHandPos;
@@ -19,44 +18,52 @@ namespace NKKD.EDIT
 		public Vector2Int rightFootPos;
 		public Vector2Int antPos;
 
-		public void SetPos(enPartsType partsType, Vector2Int pos)
+		public void SetPos(enEditPartsType partsType, Vector2Int pos)
 		{
 			switch (partsType)
 			{
-				case enPartsType.Body:
-					thoraxPos = pos;
+				case enEditPartsType.Body:
+					bodyPos = pos;
 					break;
-				case enPartsType.Head:
+				case enEditPartsType.Head:
 					headPos = pos;
 					break;
-				case enPartsType.LeftArm:
-					leftArmPos = pos;
-					break;
-				case enPartsType.RightArm:
-					rightArmPos = pos;
-					break;
-				case enPartsType.LeftHand:
+					// case enPartsType.LeftArm:
+					// 	leftArmPos = pos;
+					// 	break;
+					// case enPartsType.RightArm:
+					// 	rightArmPos = pos;
+					// 	break;
+				case enEditPartsType.LeftHand:
 					leftHandPos = pos;
 					break;
-				case enPartsType.RightHand:
+				case enEditPartsType.RightHand:
 					rightHandPos = pos;
 					break;
-				case enPartsType.LeftLeg:
-					leftLegPos = pos;
-					break;
-				case enPartsType.RightLeg:
-					rightLegPos = pos;
-					break;
-				case enPartsType.LeftFoot:
+					// case enPartsType.LeftLeg:
+					// 	leftLegPos = pos;
+					// 	break;
+					// case enPartsType.RightLeg:
+					// 	rightLegPos = pos;
+					// 	break;
+				case enEditPartsType.LeftFoot:
 					leftFootPos = pos;
 					break;
-				case enPartsType.RightFoot:
+				case enEditPartsType.RightFoot:
 					rightFootPos = pos;
 					break;
-				case enPartsType.Ant:
-					antPos = pos;
-					break;
+					// case enPartsType.Ant:
+					// 	antPos = pos;
+					// 	break;
 			}
+		}
+
+		public void SetPosJoint(int arm, int leg)
+		{
+			leftArmPos = new Vector2Int(bodyPos.x - arm, bodyPos.y + leftHandPos.y);
+			rightArmPos = new Vector2Int(bodyPos.x + arm, bodyPos.y + rightHandPos.y);
+			leftLegPos = new Vector2Int(bodyPos.x - leg, bodyPos.y + leftLegPos.y);
+			rightLegPos = new Vector2Int(bodyPos.x + leg, bodyPos.y + rightLegPos.y);
 		}
 
 		public Vector2Int GetPos(enPartsType partsType)
@@ -65,7 +72,7 @@ namespace NKKD.EDIT
 			switch (partsType)
 			{
 				case enPartsType.Body:
-					res = thoraxPos;
+					res = bodyPos;
 					break;
 				case enPartsType.Head:
 					res = headPos;
@@ -106,7 +113,7 @@ namespace NKKD.EDIT
 			AniFrame res = new AniFrame();
 			res.head = headPos;
 			res.ant = antPos;
-			res.body = thoraxPos;
+			res.body = bodyPos;
 			res.leftArm = leftArmPos;
 			res.rightArm = rightArmPos;
 			res.leftHand = leftHandPos;

@@ -12,6 +12,8 @@ namespace NKKD.EDIT
 	{
 		//パーツ選択の判定範囲
 		const float SELECT_PARTS_SIZE = 1f;
+		const int MAX_POS_X = 48;
+		const int MAX_POS_Y = 64;
 
 		///<summary>入力イベント</summary>
 		private void HandlingEvent()
@@ -332,7 +334,8 @@ namespace NKKD.EDIT
 			if (!IsSelectedParts())return;
 
 			Vector2 mousePos = (Event.current.mousePosition / mag_);
-			if (Event.current.type == EventType.MouseDrag) //ドラッグ
+			//ドラッグ
+			if (Event.current.type == EventType.MouseDrag)
 			{
 				List<Action> cmdDo = new List<Action>();
 				List<Action> cmdUndo = new List<Action>();
@@ -441,13 +444,11 @@ namespace NKKD.EDIT
 			//地面にもぐらないように
 			//float GROUNDY = 8;
 
-			int MAXPOSX = 48;
-			int MAXPOSY = 64;
 			if (newPos.y + basePos.y < 0)newPos.y = (-basePos.y);
 			//if (newPos.y + basePos.y < BasePosition.GROUNDY) newPos.y = (BasePosition.GROUNDY - basePos.y);
-			if (newPos.y + basePos.y > MAXPOSY)newPos.y = MAXPOSY - basePos.y;
-			if (newPos.x + basePos.x < -MAXPOSX)newPos.x = -MAXPOSX - basePos.x;
-			if (newPos.x + basePos.x > MAXPOSX)newPos.x = MAXPOSX - basePos.x;
+			if (newPos.y + basePos.y > MAX_POS_Y)newPos.y = MAX_POS_Y - basePos.y;
+			if (newPos.x + basePos.x < -MAX_POS_X)newPos.x = -MAX_POS_X - basePos.x;
+			if (newPos.x + basePos.x > MAX_POS_X)newPos.x = MAX_POS_X - basePos.x;
 
 			return newPos;
 		}

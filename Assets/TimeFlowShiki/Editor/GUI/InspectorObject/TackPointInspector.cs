@@ -81,7 +81,6 @@ namespace NKKD.EDIT
 
 		}
 
-		//�|�W�V���������ۂ�
 		private Vector2 RoundPosVector(Vector2 pos)
 		{
 			return new Vector2((int)pos.x, (int)pos.y);
@@ -118,7 +117,6 @@ namespace NKKD.EDIT
 			//var motionId = EditorGUILayout.Popup("motionId", selectedIndex, JMMotionMainWindow.fileList_.ToArray());
 		}
 
-		//�e��C���X�y�N�^����
 		private void DrawTackPos(TackPoint tackPoint)
 		{
 			EditorGUI.BeginChangeCheck();
@@ -146,8 +144,11 @@ namespace NKKD.EDIT
 			var rightFootX = EditorGUILayout.IntField("rightFoot.pos.x", (int)tackPoint.motionData_.mPos.rightFoot.pos.x);
 			var rightFootY = EditorGUILayout.IntField("rightFoot.pos.y", (int)tackPoint.motionData_.mPos.rightFoot.pos.y);
 
-			var antX = EditorGUILayout.IntField("Ant.pos.x", (int)tackPoint.motionData_.mPos.ant.pos.x);
-			var antY = EditorGUILayout.IntField("Ant.pos.y", (int)tackPoint.motionData_.mPos.ant.pos.y);
+			var antX = EditorGUILayout.IntField("ant.pos.x", (int)tackPoint.motionData_.mPos.ant.pos.x);
+			var antY = EditorGUILayout.IntField("ant.pos.y", (int)tackPoint.motionData_.mPos.ant.pos.y);
+
+			var coreX = EditorGUILayout.IntField("core.pos.x", (int)tackPoint.motionData_.mPos.core.pos.x);
+			var coreY = EditorGUILayout.IntField("core.pos.y", (int)tackPoint.motionData_.mPos.core.pos.y);
 
 			var bodyCurveX = (enCurve)EditorGUILayout.EnumPopup("body.curveX", (enCurve)tackPoint.motionData_.mPos.body.curveX);
 			var bodyCurveY = (enCurve)EditorGUILayout.EnumPopup("body.curveY", (enCurve)tackPoint.motionData_.mPos.body.curveY);
@@ -177,6 +178,9 @@ namespace NKKD.EDIT
 			var AntCurveX = (enCurve)EditorGUILayout.EnumPopup("Ant.curveX", (enCurve)tackPoint.motionData_.mPos.ant.curveX);
 			var AntCurveY = (enCurve)EditorGUILayout.EnumPopup("Ant.curveY", (enCurve)tackPoint.motionData_.mPos.ant.curveY);
 
+			var CoreCurveX = (enCurve)EditorGUILayout.EnumPopup("core.curveX", (enCurve)tackPoint.motionData_.mPos.core.curveX);
+			var CoreCurveY = (enCurve)EditorGUILayout.EnumPopup("core.curveY", (enCurve)tackPoint.motionData_.mPos.core.curveY);
+
 			if (EditorGUI.EndChangeCheck())
 			{
 				var lastData = tackPoint.motionData_.mPos;
@@ -204,6 +208,8 @@ namespace NKKD.EDIT
 					tackPoint.motionData_.mPos.rightFoot.pos.y = rightFootY;
 					tackPoint.motionData_.mPos.ant.pos.x = antX;
 					tackPoint.motionData_.mPos.ant.pos.y = antY;
+					tackPoint.motionData_.mPos.core.pos.x = coreX;
+					tackPoint.motionData_.mPos.core.pos.y = coreY;
 
 					tackPoint.motionData_.mPos.body.curveX = (int)bodyCurveX;
 					tackPoint.motionData_.mPos.body.curveY = (int)bodyCurveY;
@@ -227,6 +233,10 @@ namespace NKKD.EDIT
 					tackPoint.motionData_.mPos.rightFoot.curveY = (int)rightFootCurveY;
 					tackPoint.motionData_.mPos.ant.curveX = (int)AntCurveX;
 					tackPoint.motionData_.mPos.ant.curveY = (int)AntCurveY;
+
+					tackPoint.motionData_.mPos.core.curveX = (int)CoreCurveX;
+					tackPoint.motionData_.mPos.core.curveY = (int)CoreCurveY;
+
 				};
 
 				ARIMotionMainWindow.tackCmd_.Do(

@@ -16,6 +16,9 @@ public struct AniFrame : ISharedComponentData
     public Vector2Int rightLeg;
     public Vector2Int leftFoot;
     public Vector2Int rightFoot;
+    public Vector2Int core;
+    public Vector2Int waist;
+
     public int angle;
     public int face;
 }

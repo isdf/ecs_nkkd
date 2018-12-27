@@ -243,9 +243,11 @@ namespace NKKD.EDIT
 		///<summary>各パーツ描画</summary>
 		void DrawParts(enPartsType partsType, bool isLabel)
 		{
+
 			PartsObject partsObject = GetPartsObject(partsType);
 			Vector2 pos = partsObject.pos;
-			pos.y = -pos.y; //上下反転
+			//上下反転
+			pos.y = -pos.y;
 
 			Sprite sp = parent_.GetSprite(partsType, sendMotion_.stPassive.isBack, sendMotion_.stPassive.faceNo);
 			if (sp != null)

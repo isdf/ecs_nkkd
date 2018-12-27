@@ -24,10 +24,6 @@ namespace NKKD.EDIT
 		}
 
 		public static Action<OnTrackEvent> ParentEmit;
-
-		//[SerializeField]
-		//SubWindowInspector subWindowInspector;
-
 		enum enFocusObject
 		{
 			focusTack,
