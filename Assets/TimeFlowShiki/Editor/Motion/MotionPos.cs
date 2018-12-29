@@ -18,15 +18,11 @@ namespace NKKD.EDIT
 	{
 		public PartsPos head;
 		public PartsPos body;
-		public PartsPos leftArm;
-		public PartsPos rightArm;
 		public PartsPos leftHand;
 		public PartsPos rightHand;
-		public PartsPos leftLeg;
-		public PartsPos rightLeg;
 		public PartsPos leftFoot;
 		public PartsPos rightFoot;
-		public PartsPos ant;
+		// public PartsPos ant;
 		public PartsPos core;
 
 		//カーブの計算
@@ -110,9 +106,10 @@ namespace NKKD.EDIT
 
 			float coreX = IntermediateCurve(frame, edPos.GetCurveX(enEditPartsType.Core), stPos.GetPos(enEditPartsType.Core).x, edPos.GetPos(enEditPartsType.Core).x);
 			float coreY = IntermediateCurve(frame, edPos.GetCurveY(enEditPartsType.Core), stPos.GetPos(enEditPartsType.Core).y, edPos.GetPos(enEditPartsType.Core).y);
-
-			var armX = Mathf.Sin(coreY * Mathf.Deg2Rad) * BasePosition.CORE_SIZE;
-			var legX = Mathf.Sin(coreX * Mathf.Deg2Rad) * BasePosition.CORE_SIZE;
+			coreX = (coreX * BasePosition.CORE_ANGLE_MAG) + BasePosition.CORE_ANGLE;
+			coreY = (coreY * BasePosition.CORE_ANGLE_MAG) + BasePosition.CORE_ANGLE;
+			var armX = Mathf.Cos(coreX * Mathf.Deg2Rad) * BasePosition.CORE_BREAST_SIZE;
+			var legX = Mathf.Cos(coreY * Mathf.Deg2Rad) * BasePosition.CORE_WAIST_SIZE;
 
 			res.SetPosJoint((int)Math.Round(armX), (int)Math.Round(legX));
 
@@ -120,42 +117,69 @@ namespace NKKD.EDIT
 
 		}
 
-		public void SetPos(enPartsType partsType, Vector2Int pos)
+		// public void SetPos(enPartsType partsType, Vector2Int pos)
+		// {
+		// 	switch (partsType)
+		// 	{
+		// 		case enPartsType.Body:
+		// 			body.pos = pos;
+		// 			break;
+		// 		case enPartsType.Head:
+		// 			head.pos = pos;
+		// 			break;
+		// 		case enPartsType.LeftArm:
+		// 			leftArm.pos = pos;
+		// 			break;
+		// 		case enPartsType.RightArm:
+		// 			rightArm.pos = pos;
+		// 			break;
+		// 		case enPartsType.LeftHand:
+		// 			leftHand.pos = pos;
+		// 			break;
+		// 		case enPartsType.RightHand:
+		// 			rightHand.pos = pos;
+		// 			break;
+		// 		case enPartsType.LeftLeg:
+		// 			leftLeg.pos = pos;
+		// 			break;
+		// 		case enPartsType.RightLeg:
+		// 			rightLeg.pos = pos;
+		// 			break;
+		// 		case enPartsType.LeftFoot:
+		// 			leftFoot.pos = pos;
+		// 			break;
+		// 		case enPartsType.RightFoot:
+		// 			rightFoot.pos = pos;
+		// 			break;
+		// 		case enPartsType.Ant:
+		// 			ant.pos = pos;
+		// 			break;
+		// 	}
+		// }
+		public void SetPos(enEditPartsType editPartsType, Vector2Int pos)
 		{
-			switch (partsType)
+			switch (editPartsType)
 			{
-				case enPartsType.Body:
+				case enEditPartsType.Body:
 					body.pos = pos;
 					break;
-				case enPartsType.Head:
+				case enEditPartsType.Head:
 					head.pos = pos;
 					break;
-				case enPartsType.LeftArm:
-					leftArm.pos = pos;
-					break;
-				case enPartsType.RightArm:
-					rightArm.pos = pos;
-					break;
-				case enPartsType.LeftHand:
+				case enEditPartsType.LeftHand:
 					leftHand.pos = pos;
 					break;
-				case enPartsType.RightHand:
+				case enEditPartsType.RightHand:
 					rightHand.pos = pos;
 					break;
-				case enPartsType.LeftLeg:
-					leftLeg.pos = pos;
-					break;
-				case enPartsType.RightLeg:
-					rightLeg.pos = pos;
-					break;
-				case enPartsType.LeftFoot:
+				case enEditPartsType.LeftFoot:
 					leftFoot.pos = pos;
 					break;
-				case enPartsType.RightFoot:
+				case enEditPartsType.RightFoot:
 					rightFoot.pos = pos;
 					break;
-				case enPartsType.Ant:
-					ant.pos = pos;
+				case enEditPartsType.Core:
+					core.pos = pos;
 					break;
 			}
 		}
@@ -170,81 +194,21 @@ namespace NKKD.EDIT
 				case enEditPartsType.Head:
 					res = head.pos;
 					break;
-					// case enEditPartsType.LeftArm:
-					// 	res = leftArm.pos;
-					// 	break;
-					// case enPartsType.RightArm:
-					// 	res = rightArm.pos;
-					// 	break;
 				case enEditPartsType.LeftHand:
 					res = leftHand.pos;
 					break;
 				case enEditPartsType.RightHand:
 					res = rightHand.pos;
 					break;
-					// case enPartsType.LeftLeg:
-					// 	res = leftLeg.pos;
-					// 	break;
-					// case enPartsType.RightLeg:
-					// 	res = rightLeg.pos;
-					// 	break;
 				case enEditPartsType.LeftFoot:
 					res = leftFoot.pos;
 					break;
 				case enEditPartsType.RightFoot:
 					res = rightFoot.pos;
 					break;
-					// case enEditPartsType.Ant:
-					// 	res = ant.pos;
-					// 	break;
 				case enEditPartsType.Core:
 					res = core.pos;
 					break;
-			}
-			return res;
-		}
-
-		public Vector2Int GetPos(enPartsType partsType)
-		{
-			Vector2Int res = Vector2Int.zero;
-			switch (partsType)
-			{
-				case enPartsType.Body:
-					res = body.pos;
-					break;
-				case enPartsType.Head:
-					res = head.pos;
-					break;
-				case enPartsType.LeftArm:
-					res = leftArm.pos;
-					break;
-				case enPartsType.RightArm:
-					res = rightArm.pos;
-					break;
-				case enPartsType.LeftHand:
-					res = leftHand.pos;
-					break;
-				case enPartsType.RightHand:
-					res = rightHand.pos;
-					break;
-				case enPartsType.LeftLeg:
-					res = leftLeg.pos;
-					break;
-				case enPartsType.RightLeg:
-					res = rightLeg.pos;
-					break;
-				case enPartsType.LeftFoot:
-					res = leftFoot.pos;
-					break;
-				case enPartsType.RightFoot:
-					res = rightFoot.pos;
-					break;
-				case enPartsType.Ant:
-					res = ant.pos;
-					break;
-					// case enPartsType.Core:
-					// 	res = core.pos;
-					// 	break;
 			}
 			return res;
 		}
@@ -260,33 +224,18 @@ namespace NKKD.EDIT
 				case enEditPartsType.Head:
 					head.curveX = intCurveX;
 					break;
-					// case enPartsType.LeftArm:
-					// 	leftArm.curveX = intCurveX;
-					// 	break;
-					// case enPartsType.RightArm:
-					// 	rightArm.curveX = intCurveX;
-					// 	break;
 				case enEditPartsType.LeftHand:
 					leftHand.curveX = intCurveX;
 					break;
 				case enEditPartsType.RightHand:
 					rightHand.curveX = intCurveX;
 					break;
-					// case enPartsType.LeftLeg:
-					// 	leftLeg.curveX = intCurveX;
-					// 	break;
-					// case enPartsType.RightLeg:
-					// 	rightLeg.curveX = intCurveX;
-					// 	break;
 				case enEditPartsType.LeftFoot:
 					leftFoot.curveX = intCurveX;
 					break;
 				case enEditPartsType.RightFoot:
 					rightFoot.curveX = intCurveX;
 					break;
-					// case enPartsType.Ant:
-					// 	ant.curveX = intCurveX;
-					// 	break;
 				case enEditPartsType.Core:
 					core.curveX = intCurveX;
 					break;

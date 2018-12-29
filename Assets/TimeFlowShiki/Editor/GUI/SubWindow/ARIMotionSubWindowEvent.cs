@@ -185,10 +185,11 @@ namespace NKKD.EDIT
 
 				foreach (var item in drawList)
 				{
-					isMultiParts_[item] = (isAllSelect)
+					var editParts = PartsConverter.Convert(item);
+					isMultiParts_[editParts] = (isAllSelect)
 						? true
-						: !isMultiParts_[item];
-					multiOffset_[item] = Vector2Int.zero;
+						: !isMultiParts_[editParts];
+					multiOffset_[editParts] = Vector2Int.zero;
 				}
 
 				isRepaint_ = true;
@@ -225,8 +226,10 @@ namespace NKKD.EDIT
 
 				foreach (enPartsType item in Enum.GetValues(typeof(enPartsType)))
 				{
-					isMultiParts_[item] = (partsType == item);
-					multiOffset_[item] = Vector2Int.zero;
+					var editParts = PartsConverter.Convert(item);
+
+					isMultiParts_[editParts] = (partsType == item);
+					multiOffset_[editParts] = Vector2Int.zero;
 				}
 				isRepaint_ = true;
 
@@ -305,18 +308,22 @@ namespace NKKD.EDIT
 						if (partsType != item)
 							continue;
 
-						isMultiParts_[item] = !isMultiParts_[item];
-						multiOffset_[item] = Vector2Int.zero;
+						var editParts = PartsConverter.Convert(item);
+
+						isMultiParts_[editParts] = !isMultiParts_[editParts];
+						multiOffset_[editParts] = Vector2Int.zero;
 					}
 				}
 				else
 				{
 					foreach (var item in drawList)
 					{
-						isMultiParts_[item] = (partsType != item)
+						var editParts = PartsConverter.Convert(item);
+
+						isMultiParts_[editParts] = (partsType != item)
 							? false
-							: !isMultiParts_[item];
-						multiOffset_[item] = Vector2Int.zero;
+							: !isMultiParts_[editParts];
+						multiOffset_[editParts] = Vector2Int.zero;
 					}
 				}
 
@@ -342,20 +349,49 @@ namespace NKKD.EDIT
 				string id = MethodBase.GetCurrentMethod().Name;
 				foreach (enPartsType item in Enum.GetValues(typeof(enPartsType)))
 				{
-					if (!isMultiParts_[item])continue;
+					var editParts = PartsConverter.Convert(item);
+					if (!isMultiParts_[editParts])
+						continue;
+
+					//コアは後で
+					if (editParts == enEditPartsType.Core)
+						continue;
 
 					Vector2 movePos = new Vector2(
-						mousePos.x - camPos_.x - multiOffset_[item].x, -mousePos.y + camPos_.y - multiOffset_[item].y);
+						mousePos.x - camPos_.x - multiOffset_[editParts].x, -mousePos.y + camPos_.y - multiOffset_[editParts].y);
 					Undo.RecordObject(parent_, "ChangePartsPos");
 
-					Vector2Int newPos = GetNewPos(item, RoundPosVector(movePos));
+					// Vector2Int newPos = GetNewPos(item, RoundPosVector(movePos));
+					Vector2Int newPos = RoundPosVector(movePos);
+					// GetNewPos(item, RoundPosVector(movePos));
 					var activeTack = parent_.GetActiveScore().GetActiveTackPoint();
-					var lastPos = activeTack.motionData_.mPos.GetPos(item);
+					var lastPos = activeTack.motionData_.mPos.GetPos(editParts);
 					var partsType = item;
 					id += partsType;
 					//コマンドPos
-					cmdDo.Add(() => activeTack.motionData_.mPos.SetPos(partsType, newPos));
-					cmdUndo.Add(() => activeTack.motionData_.mPos.SetPos(partsType, lastPos));
+					cmdDo.Add(() => activeTack.motionData_.mPos.SetPos(editParts, newPos));
+					cmdUndo.Add(() => activeTack.motionData_.mPos.SetPos(editParts, lastPos));
+				}
+
+				if (isMultiParts_[enEditPartsType.Core])
+				{
+					// Debug.Log("asdf");
+					var editParts = enEditPartsType.Core;
+
+					Vector2 movePos = new Vector2(
+						mousePos.x - camPos_.x - multiOffset_[editParts].x, -mousePos.y + camPos_.y - multiOffset_[editParts].y);
+					Undo.RecordObject(parent_, "ChangePartsPos");
+
+					Vector2Int newPos = RoundPosVector(movePos);
+					Debug.Log(movePos);
+					// GetNewPos(editParts, RoundPosVector(movePos));
+					var activeTack = parent_.GetActiveScore().GetActiveTackPoint();
+					var lastPos = activeTack.motionData_.mPos.GetPos(editParts);
+					// var partsType = item;
+					id += editParts;
+					//コマンドPos
+					cmdDo.Add(() => activeTack.motionData_.mPos.SetPos(editParts, newPos));
+					cmdUndo.Add(() => activeTack.motionData_.mPos.SetPos(editParts, lastPos));
 				}
 
 				if (cmdDo.Any())
@@ -390,7 +426,8 @@ namespace NKKD.EDIT
 
 				foreach (enPartsType item in Enum.GetValues(typeof(enPartsType)))
 				{
-					if (!isMultiParts_[item])continue;
+					var editParts = PartsConverter.Convert(item);
+					if (!isMultiParts_[editParts])continue;
 
 					Vector2Int movePos = GetPartsObject(item).pos;
 					switch (keycode)
@@ -412,13 +449,14 @@ namespace NKKD.EDIT
 							break; //元の位置に戻す
 					}
 
-					Vector2Int newPos = GetNewPos(item, RoundPosVector(movePos));
+					Vector2Int newPos = RoundPosVector(movePos);
+					// GetNewPos(item, RoundPosVector(movePos));
 					var activeTack = parent_.GetActiveScore().GetActiveTackPoint();
-					var lastPos = activeTack.motionData_.mPos.GetPos(item);
+					var lastPos = activeTack.motionData_.mPos.GetPos(editParts);
 					var partsType = item;
 					//コマンドPos
-					cmdDo.Add(() => activeTack.motionData_.mPos.SetPos(partsType, newPos));
-					cmdUndo.Add(() => activeTack.motionData_.mPos.SetPos(partsType, lastPos));
+					cmdDo.Add(() => activeTack.motionData_.mPos.SetPos(editParts, newPos));
+					cmdUndo.Add(() => activeTack.motionData_.mPos.SetPos(editParts, lastPos));
 					id += partsType;
 				}
 
@@ -433,25 +471,21 @@ namespace NKKD.EDIT
 			}
 		}
 
-		//アクティブタックの位置変更
-		private Vector2Int GetNewPos(enPartsType partsType, Vector2Int pos)
-		{
-			Vector2Int newPos = Vector2Int.zero;
-			Vector2Int basePos = BasePosition.GetPosEdit(partsType, false);
-			newPos.x = pos.x - basePos.x;
-			newPos.y = pos.y - basePos.y;
+		// //アクティブタックの位置変更
+		// private Vector2Int GetNewPos(enEditPartsType partsType, Vector2Int pos)
+		// {
+		// 	Vector2Int newPos = Vector2Int.zero;
+		// 	Vector2Int basePos = BasePosition.GetPosEdit(partsType, false);
+		// 	newPos.x = pos.x - basePos.x;
+		// 	newPos.y = pos.y - basePos.y;
 
-			//地面にもぐらないように
-			//float GROUNDY = 8;
+		// 	if (newPos.y + basePos.y < 0)newPos.y = (-basePos.y);
+		// 	if (newPos.y + basePos.y > MAX_POS_Y)newPos.y = MAX_POS_Y - basePos.y;
+		// 	if (newPos.x + basePos.x < -MAX_POS_X)newPos.x = -MAX_POS_X - basePos.x;
+		// 	if (newPos.x + basePos.x > MAX_POS_X)newPos.x = MAX_POS_X - basePos.x;
 
-			if (newPos.y + basePos.y < 0)newPos.y = (-basePos.y);
-			//if (newPos.y + basePos.y < BasePosition.GROUNDY) newPos.y = (BasePosition.GROUNDY - basePos.y);
-			if (newPos.y + basePos.y > MAX_POS_Y)newPos.y = MAX_POS_Y - basePos.y;
-			if (newPos.x + basePos.x < -MAX_POS_X)newPos.x = -MAX_POS_X - basePos.x;
-			if (newPos.x + basePos.x > MAX_POS_X)newPos.x = MAX_POS_X - basePos.x;
-
-			return newPos;
-		}
+		// 	return newPos;
+		// }
 
 		//Transform---------------
 		private void ChangeTransformRotate()
@@ -471,7 +505,9 @@ namespace NKKD.EDIT
 
 				foreach (enPartsType item in Enum.GetValues(typeof(enPartsType)))
 				{
-					if (!isMultiParts_[item])continue;
+					var editParts = PartsConverter.Convert(item);
+
+					if (!isMultiParts_[editParts])continue;
 
 					int r = (int)GetPartsObject(item).partsTransform.rotate;
 					enPartsRotate newRotate = enPartsRotate.Rotate0;
@@ -623,7 +659,9 @@ namespace NKKD.EDIT
 
 				foreach (enPartsType item in Enum.GetValues(typeof(enPartsType)))
 				{
-					if (!isMultiParts_[item])continue;
+					var editParts = PartsConverter.Convert(item);
+					if (!isMultiParts_[editParts])continue;
+
 					var lastTransform = activeTack.motionData_.mTransform.GetTransform(item);
 					var partsType = item;
 					id += partsType;

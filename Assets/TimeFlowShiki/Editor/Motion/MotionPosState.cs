@@ -4,6 +4,8 @@ using UnityEngine;
 
 namespace NKKD.EDIT
 {
+
+	///<summary>実際に出力される座標データ</summary>
 	public struct MotionPosState
 	{
 		public Vector2Int headPos;
@@ -60,10 +62,11 @@ namespace NKKD.EDIT
 
 		public void SetPosJoint(int arm, int leg)
 		{
-			leftArmPos = new Vector2Int(bodyPos.x - arm, bodyPos.y + leftHandPos.y);
-			rightArmPos = new Vector2Int(bodyPos.x + arm, bodyPos.y + rightHandPos.y);
-			leftLegPos = new Vector2Int(bodyPos.x - leg, bodyPos.y + leftLegPos.y);
-			rightLegPos = new Vector2Int(bodyPos.x + leg, bodyPos.y + rightLegPos.y);
+			const int MAG = 2;
+			leftArmPos = new Vector2Int(bodyPos.x + arm, (bodyPos.y + leftHandPos.y) >> MAG);
+			rightArmPos = new Vector2Int(bodyPos.x - arm, (bodyPos.y + rightHandPos.y) >> MAG);
+			leftLegPos = new Vector2Int(bodyPos.x + leg, (bodyPos.y + leftLegPos.y) >> MAG);
+			rightLegPos = new Vector2Int(bodyPos.x - leg, (bodyPos.y + rightLegPos.y) >> MAG);
 		}
 
 		public Vector2Int GetPos(enPartsType partsType)

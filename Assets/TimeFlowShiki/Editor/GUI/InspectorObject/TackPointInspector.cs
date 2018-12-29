@@ -124,28 +124,28 @@ namespace NKKD.EDIT
 			var bodyY = EditorGUILayout.IntField("body.pos.y", (int)tackPoint.motionData_.mPos.body.pos.y);
 			var headX = EditorGUILayout.IntField("head.pos.x", (int)tackPoint.motionData_.mPos.head.pos.x);
 			var headY = EditorGUILayout.IntField("head.pos.y", (int)tackPoint.motionData_.mPos.head.pos.y);
-			var leftArmX = EditorGUILayout.IntField("leftArm.pos.x", (int)tackPoint.motionData_.mPos.leftArm.pos.x);
-			var leftArmY = EditorGUILayout.IntField("leftArm.pos.y", (int)tackPoint.motionData_.mPos.leftArm.pos.y);
-			var rightArmX = EditorGUILayout.IntField("rightArm.pos.x", (int)tackPoint.motionData_.mPos.rightArm.pos.x);
-			var rightArmY = EditorGUILayout.IntField("rightArm.pos.y", (int)tackPoint.motionData_.mPos.rightArm.pos.y);
+			// var leftArmX = EditorGUILayout.IntField("leftArm.pos.x", (int)tackPoint.motionData_.mPos.leftArm.pos.x);
+			// var leftArmY = EditorGUILayout.IntField("leftArm.pos.y", (int)tackPoint.motionData_.mPos.leftArm.pos.y);
+			// var rightArmX = EditorGUILayout.IntField("rightArm.pos.x", (int)tackPoint.motionData_.mPos.rightArm.pos.x);
+			// var rightArmY = EditorGUILayout.IntField("rightArm.pos.y", (int)tackPoint.motionData_.mPos.rightArm.pos.y);
 
 			var leftHandX = EditorGUILayout.IntField("leftHand.pos.x", (int)tackPoint.motionData_.mPos.leftHand.pos.x);
 			var leftHandY = EditorGUILayout.IntField("leftHand.pos.y", (int)tackPoint.motionData_.mPos.leftHand.pos.y);
 			var rightHandX = EditorGUILayout.IntField("rightHand.pos.x", (int)tackPoint.motionData_.mPos.rightHand.pos.x);
 			var rightHandY = EditorGUILayout.IntField("rightHand.pos.y", (int)tackPoint.motionData_.mPos.rightHand.pos.y);
 
-			var leftLegX = EditorGUILayout.IntField("leftLeg.pos.x", (int)tackPoint.motionData_.mPos.leftLeg.pos.x);
-			var leftLegY = EditorGUILayout.IntField("leftLeg.pos.y", (int)tackPoint.motionData_.mPos.leftLeg.pos.y);
-			var rightLegX = EditorGUILayout.IntField("rightLeg.pos.x", (int)tackPoint.motionData_.mPos.rightLeg.pos.x);
-			var rightLegY = EditorGUILayout.IntField("rightLeg.pos.y", (int)tackPoint.motionData_.mPos.rightLeg.pos.y);
+			// var leftLegX = EditorGUILayout.IntField("leftLeg.pos.x", (int)tackPoint.motionData_.mPos.leftLeg.pos.x);
+			// var leftLegY = EditorGUILayout.IntField("leftLeg.pos.y", (int)tackPoint.motionData_.mPos.leftLeg.pos.y);
+			// var rightLegX = EditorGUILayout.IntField("rightLeg.pos.x", (int)tackPoint.motionData_.mPos.rightLeg.pos.x);
+			// var rightLegY = EditorGUILayout.IntField("rightLeg.pos.y", (int)tackPoint.motionData_.mPos.rightLeg.pos.y);
 
 			var leftFootX = EditorGUILayout.IntField("leftFoot.pos.x", (int)tackPoint.motionData_.mPos.leftFoot.pos.x);
 			var leftFootY = EditorGUILayout.IntField("leftFoot.pos.y", (int)tackPoint.motionData_.mPos.leftFoot.pos.y);
 			var rightFootX = EditorGUILayout.IntField("rightFoot.pos.x", (int)tackPoint.motionData_.mPos.rightFoot.pos.x);
 			var rightFootY = EditorGUILayout.IntField("rightFoot.pos.y", (int)tackPoint.motionData_.mPos.rightFoot.pos.y);
 
-			var antX = EditorGUILayout.IntField("ant.pos.x", (int)tackPoint.motionData_.mPos.ant.pos.x);
-			var antY = EditorGUILayout.IntField("ant.pos.y", (int)tackPoint.motionData_.mPos.ant.pos.y);
+			// var antX = EditorGUILayout.IntField("ant.pos.x", (int)tackPoint.motionData_.mPos.ant.pos.x);
+			// var antY = EditorGUILayout.IntField("ant.pos.y", (int)tackPoint.motionData_.mPos.ant.pos.y);
 
 			var coreX = EditorGUILayout.IntField("core.pos.x", (int)tackPoint.motionData_.mPos.core.pos.x);
 			var coreY = EditorGUILayout.IntField("core.pos.y", (int)tackPoint.motionData_.mPos.core.pos.y);
@@ -155,28 +155,28 @@ namespace NKKD.EDIT
 			var headCurveX = (enCurve)EditorGUILayout.EnumPopup("head.curveX", (enCurve)tackPoint.motionData_.mPos.head.curveX);
 			var headCurveY = (enCurve)EditorGUILayout.EnumPopup("head.curveY", (enCurve)tackPoint.motionData_.mPos.head.curveY);
 
-			var leftArmCurveX = (enCurve)EditorGUILayout.EnumPopup("leftArm.curveX", (enCurve)tackPoint.motionData_.mPos.leftArm.curveX);
-			var leftArmCurveY = (enCurve)EditorGUILayout.EnumPopup("leftArm.curveY", (enCurve)tackPoint.motionData_.mPos.leftArm.curveY);
-			var rightArmCurveX = (enCurve)EditorGUILayout.EnumPopup("rightArm.curveX", (enCurve)tackPoint.motionData_.mPos.rightArm.curveX);
-			var rightArmCurveY = (enCurve)EditorGUILayout.EnumPopup("rightArm.curveY", (enCurve)tackPoint.motionData_.mPos.rightArm.curveY);
+			// var leftArmCurveX = (enCurve)EditorGUILayout.EnumPopup("leftArm.curveX", (enCurve)tackPoint.motionData_.mPos.leftArm.curveX);
+			// var leftArmCurveY = (enCurve)EditorGUILayout.EnumPopup("leftArm.curveY", (enCurve)tackPoint.motionData_.mPos.leftArm.curveY);
+			// var rightArmCurveX = (enCurve)EditorGUILayout.EnumPopup("rightArm.curveX", (enCurve)tackPoint.motionData_.mPos.rightArm.curveX);
+			// var rightArmCurveY = (enCurve)EditorGUILayout.EnumPopup("rightArm.curveY", (enCurve)tackPoint.motionData_.mPos.rightArm.curveY);
 
 			var leftHandCurveX = (enCurve)EditorGUILayout.EnumPopup("leftHand.curveX", (enCurve)tackPoint.motionData_.mPos.leftHand.curveX);
 			var leftHandCurveY = (enCurve)EditorGUILayout.EnumPopup("leftHand.curveY", (enCurve)tackPoint.motionData_.mPos.leftHand.curveY);
 			var rightHandCurveX = (enCurve)EditorGUILayout.EnumPopup("rightHand.curveX", (enCurve)tackPoint.motionData_.mPos.rightHand.curveX);
 			var rightHandCurveY = (enCurve)EditorGUILayout.EnumPopup("rightHand.curveY", (enCurve)tackPoint.motionData_.mPos.rightHand.curveY);
 
-			var leftLegCurveX = (enCurve)EditorGUILayout.EnumPopup("leftLeg.curveX", (enCurve)tackPoint.motionData_.mPos.leftLeg.curveX);
-			var leftLegCurveY = (enCurve)EditorGUILayout.EnumPopup("leftLeg.curveY", (enCurve)tackPoint.motionData_.mPos.leftLeg.curveY);
-			var rightLegCurveX = (enCurve)EditorGUILayout.EnumPopup("rightLeg.curveX", (enCurve)tackPoint.motionData_.mPos.rightLeg.curveX);
-			var rightLegCurveY = (enCurve)EditorGUILayout.EnumPopup("rightLeg.curveY", (enCurve)tackPoint.motionData_.mPos.rightLeg.curveY);
+			// var leftLegCurveX = (enCurve)EditorGUILayout.EnumPopup("leftLeg.curveX", (enCurve)tackPoint.motionData_.mPos.leftLeg.curveX);
+			// var leftLegCurveY = (enCurve)EditorGUILayout.EnumPopup("leftLeg.curveY", (enCurve)tackPoint.motionData_.mPos.leftLeg.curveY);
+			// var rightLegCurveX = (enCurve)EditorGUILayout.EnumPopup("rightLeg.curveX", (enCurve)tackPoint.motionData_.mPos.rightLeg.curveX);
+			// var rightLegCurveY = (enCurve)EditorGUILayout.EnumPopup("rightLeg.curveY", (enCurve)tackPoint.motionData_.mPos.rightLeg.curveY);
 
 			var leftFootCurveX = (enCurve)EditorGUILayout.EnumPopup("leftFoot.curveX", (enCurve)tackPoint.motionData_.mPos.leftFoot.curveX);
 			var leftFootCurveY = (enCurve)EditorGUILayout.EnumPopup("leftFoot.curveY", (enCurve)tackPoint.motionData_.mPos.leftFoot.curveY);
 			var rightFootCurveX = (enCurve)EditorGUILayout.EnumPopup("rightFoot.curveX", (enCurve)tackPoint.motionData_.mPos.rightFoot.curveX);
 			var rightFootCurveY = (enCurve)EditorGUILayout.EnumPopup("rightFoot.curveY", (enCurve)tackPoint.motionData_.mPos.rightFoot.curveY);
 
-			var AntCurveX = (enCurve)EditorGUILayout.EnumPopup("Ant.curveX", (enCurve)tackPoint.motionData_.mPos.ant.curveX);
-			var AntCurveY = (enCurve)EditorGUILayout.EnumPopup("Ant.curveY", (enCurve)tackPoint.motionData_.mPos.ant.curveY);
+			// var AntCurveX = (enCurve)EditorGUILayout.EnumPopup("Ant.curveX", (enCurve)tackPoint.motionData_.mPos.ant.curveX);
+			// var AntCurveY = (enCurve)EditorGUILayout.EnumPopup("Ant.curveY", (enCurve)tackPoint.motionData_.mPos.ant.curveY);
 
 			var CoreCurveX = (enCurve)EditorGUILayout.EnumPopup("core.curveX", (enCurve)tackPoint.motionData_.mPos.core.curveX);
 			var CoreCurveY = (enCurve)EditorGUILayout.EnumPopup("core.curveY", (enCurve)tackPoint.motionData_.mPos.core.curveY);
@@ -190,24 +190,24 @@ namespace NKKD.EDIT
 					tackPoint.motionData_.mPos.body.pos.y = bodyY;
 					tackPoint.motionData_.mPos.head.pos.x = headX;
 					tackPoint.motionData_.mPos.head.pos.y = headY;
-					tackPoint.motionData_.mPos.leftArm.pos.x = leftArmX;
-					tackPoint.motionData_.mPos.leftArm.pos.y = leftArmY;
-					tackPoint.motionData_.mPos.rightArm.pos.x = rightArmX;
-					tackPoint.motionData_.mPos.rightArm.pos.y = rightArmY;
+					// tackPoint.motionData_.mPos.leftArm.pos.x = leftArmX;
+					// tackPoint.motionData_.mPos.leftArm.pos.y = leftArmY;
+					// tackPoint.motionData_.mPos.rightArm.pos.x = rightArmX;
+					// tackPoint.motionData_.mPos.rightArm.pos.y = rightArmY;
 					tackPoint.motionData_.mPos.leftHand.pos.x = leftHandX;
 					tackPoint.motionData_.mPos.leftHand.pos.y = leftHandY;
 					tackPoint.motionData_.mPos.rightHand.pos.x = rightHandX;
 					tackPoint.motionData_.mPos.rightHand.pos.y = rightHandY;
-					tackPoint.motionData_.mPos.leftLeg.pos.x = leftLegX;
-					tackPoint.motionData_.mPos.leftLeg.pos.y = leftLegY;
-					tackPoint.motionData_.mPos.rightLeg.pos.x = rightLegX;
-					tackPoint.motionData_.mPos.rightLeg.pos.y = rightLegY;
+					// tackPoint.motionData_.mPos.leftLeg.pos.x = leftLegX;
+					// tackPoint.motionData_.mPos.leftLeg.pos.y = leftLegY;
+					// tackPoint.motionData_.mPos.rightLeg.pos.x = rightLegX;
+					// tackPoint.motionData_.mPos.rightLeg.pos.y = rightLegY;
 					tackPoint.motionData_.mPos.leftFoot.pos.x = leftFootX;
 					tackPoint.motionData_.mPos.leftFoot.pos.y = leftFootY;
 					tackPoint.motionData_.mPos.rightFoot.pos.x = rightFootX;
 					tackPoint.motionData_.mPos.rightFoot.pos.y = rightFootY;
-					tackPoint.motionData_.mPos.ant.pos.x = antX;
-					tackPoint.motionData_.mPos.ant.pos.y = antY;
+					// tackPoint.motionData_.mPos.ant.pos.x = antX;
+					// tackPoint.motionData_.mPos.ant.pos.y = antY;
 					tackPoint.motionData_.mPos.core.pos.x = coreX;
 					tackPoint.motionData_.mPos.core.pos.y = coreY;
 
@@ -215,24 +215,24 @@ namespace NKKD.EDIT
 					tackPoint.motionData_.mPos.body.curveY = (int)bodyCurveY;
 					tackPoint.motionData_.mPos.head.curveX = (int)headCurveX;
 					tackPoint.motionData_.mPos.head.curveY = (int)headCurveY;
-					tackPoint.motionData_.mPos.leftArm.curveX = (int)leftArmCurveX;
-					tackPoint.motionData_.mPos.leftArm.curveY = (int)leftArmCurveY;
-					tackPoint.motionData_.mPos.rightArm.curveX = (int)rightArmCurveX;
-					tackPoint.motionData_.mPos.rightArm.curveY = (int)rightArmCurveY;
+					// tackPoint.motionData_.mPos.leftArm.curveX = (int)leftArmCurveX;
+					// tackPoint.motionData_.mPos.leftArm.curveY = (int)leftArmCurveY;
+					// tackPoint.motionData_.mPos.rightArm.curveX = (int)rightArmCurveX;
+					// tackPoint.motionData_.mPos.rightArm.curveY = (int)rightArmCurveY;
 					tackPoint.motionData_.mPos.leftHand.curveX = (int)leftHandCurveX;
 					tackPoint.motionData_.mPos.leftHand.curveY = (int)leftHandCurveY;
 					tackPoint.motionData_.mPos.rightHand.curveX = (int)rightHandCurveX;
 					tackPoint.motionData_.mPos.rightHand.curveY = (int)rightHandCurveY;
-					tackPoint.motionData_.mPos.leftLeg.curveX = (int)leftLegCurveX;
-					tackPoint.motionData_.mPos.leftLeg.curveY = (int)leftLegCurveY;
-					tackPoint.motionData_.mPos.rightLeg.curveX = (int)rightLegCurveX;
-					tackPoint.motionData_.mPos.rightLeg.curveY = (int)rightLegCurveY;
+					// tackPoint.motionData_.mPos.leftLeg.curveX = (int)leftLegCurveX;
+					// tackPoint.motionData_.mPos.leftLeg.curveY = (int)leftLegCurveY;
+					// tackPoint.motionData_.mPos.rightLeg.curveX = (int)rightLegCurveX;
+					// tackPoint.motionData_.mPos.rightLeg.curveY = (int)rightLegCurveY;
 					tackPoint.motionData_.mPos.leftFoot.curveX = (int)leftFootCurveX;
 					tackPoint.motionData_.mPos.leftFoot.curveY = (int)leftFootCurveY;
 					tackPoint.motionData_.mPos.rightFoot.curveX = (int)rightFootCurveX;
 					tackPoint.motionData_.mPos.rightFoot.curveY = (int)rightFootCurveY;
-					tackPoint.motionData_.mPos.ant.curveX = (int)AntCurveX;
-					tackPoint.motionData_.mPos.ant.curveY = (int)AntCurveY;
+					// tackPoint.motionData_.mPos.ant.curveX = (int)AntCurveX;
+					// tackPoint.motionData_.mPos.ant.curveY = (int)AntCurveY;
 
 					tackPoint.motionData_.mPos.core.curveX = (int)CoreCurveX;
 					tackPoint.motionData_.mPos.core.curveY = (int)CoreCurveY;

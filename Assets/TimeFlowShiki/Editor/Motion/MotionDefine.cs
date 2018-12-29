@@ -255,4 +255,42 @@ namespace NKKD.EDIT
 			return res;
 		}
 	}
+
+	public static class PartsConverter
+	{
+		public static enEditPartsType Convert(enPartsType partsType)
+		{
+			enEditPartsType res = enEditPartsType._END;
+
+			switch (partsType)
+			{
+				case enPartsType.Body:
+					res = enEditPartsType.Body;
+					break;
+				case enPartsType.Head:
+					res = enEditPartsType.Head;
+					break;
+				case enPartsType.LeftHand:
+					res = enEditPartsType.LeftHand;
+					break;
+				case enPartsType.RightHand:
+					res = enEditPartsType.RightHand;
+					break;
+				case enPartsType.LeftFoot:
+					res = enEditPartsType.LeftFoot;
+					break;
+				case enPartsType.RightFoot:
+					res = enEditPartsType.RightFoot;
+					break;
+				case enPartsType.LeftArm:
+				case enPartsType.RightArm:
+				case enPartsType.LeftLeg:
+				case enPartsType.RightLeg:
+					res = enEditPartsType.Core;
+					break;
+			}
+
+			return res;
+		}
+	}
 }

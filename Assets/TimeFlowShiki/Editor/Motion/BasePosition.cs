@@ -5,21 +5,26 @@ namespace NKKD.EDIT
 {
 	public static class BasePosition
 	{
-		public static readonly int BODY_Y = 10;
-		public static readonly int HEAD_Y = 8;
-		public static readonly int ANT_Y = 11;
-		public static readonly int ARM_X = 3;
+		public static readonly int BODY_Y = 12;
+		public static readonly int HEAD_Y = 18;
+		public static readonly int ANT_Y = 13;
+		public static readonly int ARM_X = 0;
 		public static readonly int ARM_Y = 12;
 		public static readonly int HAND_X = 3;
-		public static readonly int HAND_Y = 9;
-		public static readonly int LEG_X = 2;
+		public static readonly int HAND_Y = 12;
+		public static readonly int LEG_X = 0;
 		public static readonly int LEG_Y = 7;
 		public static readonly int FOOT_X = 2;
-		public static readonly int FOOT_Y = 2; //脚の地面からのドット数
+		public static readonly int FOOT_Y = 2;
 
-		public static readonly float CORE_SIZE = 4f;
+		//デフォで45度斜めを向いてる
+		public static readonly int CORE_ANGLE_MAG = 30;
+		public static readonly int CORE_ANGLE = 45;
+
+		public static readonly float CORE_BREAST_SIZE = 4f;
+		public static readonly float CORE_WAIST_SIZE = 3f;
 		public static readonly Vector2Int BODY_BASE = new Vector2Int(0, BODY_Y);
-		public static readonly Vector2Int HEAD_BASE = new Vector2Int(0, (BODY_Y + HEAD_Y));
+		public static readonly Vector2Int HEAD_BASE = new Vector2Int(0, HEAD_Y);
 		public static readonly Vector2Int L_ARM_BASE = new Vector2Int(ARM_X, ARM_Y);
 		public static readonly Vector2Int R_ARM_BASE = new Vector2Int(-ARM_X, ARM_Y);
 		public static readonly Vector2Int L_HAND_BASE = new Vector2Int(HAND_X, HAND_Y);

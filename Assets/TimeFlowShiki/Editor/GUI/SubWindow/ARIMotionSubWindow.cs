@@ -52,10 +52,8 @@ namespace NKKD.EDIT
 
 		enFocusObject focusObject_;
 		TimelineType timelineType_;
-		//Vector2Int holdOffset_;
-
-		Dictionary<enPartsType, bool> isMultiParts_ = new Dictionary<enPartsType, bool>();
-		Dictionary<enPartsType, Vector2Int> multiOffset_ = new Dictionary<enPartsType, Vector2Int>();
+		Dictionary<enEditPartsType, bool> isMultiParts_ = new Dictionary<enEditPartsType, bool>();
+		Dictionary<enEditPartsType, Vector2Int> multiOffset_ = new Dictionary<enEditPartsType, Vector2Int>();
 
 		string lastTackId_;
 		string lastParentTimelineId_;
@@ -101,8 +99,10 @@ namespace NKKD.EDIT
 			isRepaint_ = true;
 			foreach (enPartsType item in Enum.GetValues(typeof(enPartsType)))
 			{
-				isMultiParts_[item] = false;
-				multiOffset_[item] = Vector2Int.zero;
+				var enEditParts = PartsConverter.Convert(item);
+
+				isMultiParts_[enEditParts] = false;
+				multiOffset_[enEditParts] = Vector2Int.zero;
 			}
 		}
 
@@ -489,8 +489,10 @@ namespace NKKD.EDIT
 		{
 			foreach (enPartsType item in Enum.GetValues(typeof(enPartsType)))
 			{
-				isMultiParts_[item] = false;
-				multiOffset_[item] = Vector2Int.zero;
+				var enEditParts = PartsConverter.Convert(item);
+
+				isMultiParts_[enEditParts] = false;
+				multiOffset_[enEditParts] = Vector2Int.zero;
 			}
 		}
 
@@ -510,7 +512,9 @@ namespace NKKD.EDIT
 		//サブウインドウのパーツオブジェクト取得
 		PartsObject GetPartsObject(enPartsType partsType)
 		{
-			if (!partsObjects_.ContainsKey(partsType))partsObjects_[partsType] = new PartsObject(partsType);
+			if (!partsObjects_.ContainsKey(partsType))
+				partsObjects_[partsType] = new PartsObject(partsType);
+
 			return partsObjects_[partsType];
 		}
 

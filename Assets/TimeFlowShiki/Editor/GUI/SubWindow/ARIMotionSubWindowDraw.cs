@@ -172,13 +172,18 @@ namespace NKKD.EDIT
 				{
 					foreach (var item in drawList)
 					{
-						if (!isMultiParts_[item])
-							DrawParts(item, false); //非選択
+						//非選択
+						if (!isMultiParts_[PartsConverter.Convert(item)])
+						{
+							DrawParts(item, false);
+						}
 					}
 					foreach (var item in drawList)
 					{
-						if (isMultiParts_[item])
-							DrawParts(item, false); //選択
+						if (isMultiParts_[PartsConverter.Convert(item)])
+						{
+							DrawParts(item, false);
+						}
 					}
 				}
 				else
@@ -218,7 +223,7 @@ namespace NKKD.EDIT
 				{
 					case TimelineType.TL_POS:
 					case TimelineType.TL_TRANSFORM:
-						res = (isMultiParts_[partsType] == false);
+						res = (isMultiParts_[PartsConverter.Convert(partsType)] == false);
 						break;
 					case TimelineType.TL_MOVE:
 						break;
