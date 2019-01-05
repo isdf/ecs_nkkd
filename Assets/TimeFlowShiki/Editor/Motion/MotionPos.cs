@@ -22,8 +22,8 @@ namespace NKKD.EDIT
 		public PartsPos rightHand;
 		public PartsPos leftFoot;
 		public PartsPos rightFoot;
-		// public PartsPos ant;
-		public PartsPos core;
+		public PartsPos arm;
+		public PartsPos leg;
 
 		//カーブの計算
 		public static float IntermediateCurve(float frame, enCurve curve, float stPos, float edPos)
@@ -95,7 +95,8 @@ namespace NKKD.EDIT
 				float posx = IntermediateCurve(frame, edPos.GetCurveX(item), stPos.GetPos(item).x, edPos.GetPos(item).x);
 				float posy = IntermediateCurve(frame, edPos.GetCurveY(item), stPos.GetPos(item).y, edPos.GetPos(item).y);
 
-				if (item != enEditPartsType.Core)
+				if ((item != enEditPartsType.Arm)
+					&& (item != enEditPartsType.Leg))
 				{
 					//ArmLegAnt以外
 					res.SetPos(item, new Vector2Int(
@@ -104,12 +105,13 @@ namespace NKKD.EDIT
 				}
 			}
 
-			float coreX = IntermediateCurve(frame, edPos.GetCurveX(enEditPartsType.Core), stPos.GetPos(enEditPartsType.Core).x, edPos.GetPos(enEditPartsType.Core).x);
-			float coreY = IntermediateCurve(frame, edPos.GetCurveY(enEditPartsType.Core), stPos.GetPos(enEditPartsType.Core).y, edPos.GetPos(enEditPartsType.Core).y);
-			coreX = (coreX * BasePosition.CORE_ANGLE_MAG) + BasePosition.CORE_ANGLE;
-			coreY = (coreY * BasePosition.CORE_ANGLE_MAG) + BasePosition.CORE_ANGLE;
-			var armX = Mathf.Cos(coreX * Mathf.Deg2Rad) * BasePosition.CORE_BREAST_SIZE;
-			var legX = Mathf.Cos(coreY * Mathf.Deg2Rad) * BasePosition.CORE_WAIST_SIZE;
+			float armX = IntermediateCurve(frame, edPos.GetCurveX(enEditPartsType.Arm), stPos.GetPos(enEditPartsType.Arm).x, edPos.GetPos(enEditPartsType.Arm).x);
+			float legX = IntermediateCurve(frame, edPos.GetCurveX(enEditPartsType.Leg), stPos.GetPos(enEditPartsType.Leg).x, edPos.GetPos(enEditPartsType.Leg).x);
+			armX = (armX * BasePosition.CORE_ANGLE_MAG) + BasePosition.CORE_ANGLE;
+			legX = (legX * BasePosition.CORE_ANGLE_MAG) + BasePosition.CORE_ANGLE;
+
+			armX = Mathf.Cos(armX * Mathf.Deg2Rad) * BasePosition.CORE_BREAST_SIZE;
+			legX = Mathf.Cos(legX * Mathf.Deg2Rad) * BasePosition.CORE_WAIST_SIZE;
 
 			res.SetPosJoint((int)Math.Round(armX), (int)Math.Round(legX));
 
@@ -178,8 +180,11 @@ namespace NKKD.EDIT
 				case enEditPartsType.RightFoot:
 					rightFoot.pos = pos;
 					break;
-				case enEditPartsType.Core:
-					core.pos = pos;
+				case enEditPartsType.Arm:
+					arm.pos = pos;
+					break;
+				case enEditPartsType.Leg:
+					leg.pos = pos;
 					break;
 			}
 		}
@@ -206,8 +211,11 @@ namespace NKKD.EDIT
 				case enEditPartsType.RightFoot:
 					res = rightFoot.pos;
 					break;
-				case enEditPartsType.Core:
-					res = core.pos;
+				case enEditPartsType.Arm:
+					res = arm.pos;
+					break;
+				case enEditPartsType.Leg:
+					res = leg.pos;
 					break;
 			}
 			return res;
@@ -236,8 +244,11 @@ namespace NKKD.EDIT
 				case enEditPartsType.RightFoot:
 					rightFoot.curveX = intCurveX;
 					break;
-				case enEditPartsType.Core:
-					core.curveX = intCurveX;
+				case enEditPartsType.Arm:
+					arm.curveX = intCurveX;
+					break;
+				case enEditPartsType.Leg:
+					leg.curveX = intCurveX;
 					break;
 			}
 		}
@@ -279,8 +290,11 @@ namespace NKKD.EDIT
 					// case enPartsType.Ant:
 					// 	res = ant.curveX;
 					// 	break;
-				case enEditPartsType.Core:
-					res = core.curveX;
+				case enEditPartsType.Arm:
+					res = arm.curveX;
+					break;
+				case enEditPartsType.Leg:
+					res = leg.curveX;
 					break;
 			}
 			return (enCurve)res;
@@ -324,8 +338,11 @@ namespace NKKD.EDIT
 					// case enPartsType.Ant:
 					// 	ant.curveY = intCurveY;
 					// 	break;
-				case enEditPartsType.Core:
-					core.curveY = intCurveY;
+				case enEditPartsType.Arm:
+					arm.curveY = intCurveY;
+					break;
+				case enEditPartsType.Leg:
+					leg.curveY = intCurveY;
 					break;
 			}
 		}
@@ -367,8 +384,11 @@ namespace NKKD.EDIT
 					// case enPartsType.Ant:
 					// 	res = ant.curveY;
 					// 	break;
-				case enEditPartsType.Core:
-					res = core.curveY;
+				case enEditPartsType.Arm:
+					res = arm.curveY;
+					break;
+				case enEditPartsType.Leg:
+					res = leg.curveY;
 					break;
 			}
 			return (enCurve)res;

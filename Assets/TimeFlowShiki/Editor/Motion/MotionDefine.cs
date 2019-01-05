@@ -51,7 +51,8 @@ namespace NKKD.EDIT
 		RightHand,
 		LeftFoot,
 		RightFoot,
-		Core,
+		Arm,
+		Leg,
 		_END,
 	}
 
@@ -284,9 +285,11 @@ namespace NKKD.EDIT
 					break;
 				case enPartsType.LeftArm:
 				case enPartsType.RightArm:
+					res = enEditPartsType.Arm;
+					break;
 				case enPartsType.LeftLeg:
 				case enPartsType.RightLeg:
-					res = enEditPartsType.Core;
+					res = enEditPartsType.Leg;
 					break;
 			}
 

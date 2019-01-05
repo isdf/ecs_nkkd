@@ -147,8 +147,8 @@ namespace NKKD.EDIT
 			// var antX = EditorGUILayout.IntField("ant.pos.x", (int)tackPoint.motionData_.mPos.ant.pos.x);
 			// var antY = EditorGUILayout.IntField("ant.pos.y", (int)tackPoint.motionData_.mPos.ant.pos.y);
 
-			var coreX = EditorGUILayout.IntField("core.pos.x", (int)tackPoint.motionData_.mPos.core.pos.x);
-			var coreY = EditorGUILayout.IntField("core.pos.y", (int)tackPoint.motionData_.mPos.core.pos.y);
+			var armX = EditorGUILayout.IntField("arm.pos.x", (int)tackPoint.motionData_.mPos.arm.pos.x);
+			var legY = EditorGUILayout.IntField("leg.pos.x", (int)tackPoint.motionData_.mPos.leg.pos.x);
 
 			var bodyCurveX = (enCurve)EditorGUILayout.EnumPopup("body.curveX", (enCurve)tackPoint.motionData_.mPos.body.curveX);
 			var bodyCurveY = (enCurve)EditorGUILayout.EnumPopup("body.curveY", (enCurve)tackPoint.motionData_.mPos.body.curveY);
@@ -178,8 +178,8 @@ namespace NKKD.EDIT
 			// var AntCurveX = (enCurve)EditorGUILayout.EnumPopup("Ant.curveX", (enCurve)tackPoint.motionData_.mPos.ant.curveX);
 			// var AntCurveY = (enCurve)EditorGUILayout.EnumPopup("Ant.curveY", (enCurve)tackPoint.motionData_.mPos.ant.curveY);
 
-			var CoreCurveX = (enCurve)EditorGUILayout.EnumPopup("core.curveX", (enCurve)tackPoint.motionData_.mPos.core.curveX);
-			var CoreCurveY = (enCurve)EditorGUILayout.EnumPopup("core.curveY", (enCurve)tackPoint.motionData_.mPos.core.curveY);
+			var ArmCurveX = (enCurve)EditorGUILayout.EnumPopup("arm.curveX", (enCurve)tackPoint.motionData_.mPos.arm.curveX);
+			var LegCurveX = (enCurve)EditorGUILayout.EnumPopup("leg.curveX", (enCurve)tackPoint.motionData_.mPos.leg.curveX);
 
 			if (EditorGUI.EndChangeCheck())
 			{
@@ -208,8 +208,8 @@ namespace NKKD.EDIT
 					tackPoint.motionData_.mPos.rightFoot.pos.y = rightFootY;
 					// tackPoint.motionData_.mPos.ant.pos.x = antX;
 					// tackPoint.motionData_.mPos.ant.pos.y = antY;
-					tackPoint.motionData_.mPos.core.pos.x = coreX;
-					tackPoint.motionData_.mPos.core.pos.y = coreY;
+					tackPoint.motionData_.mPos.arm.pos.x = armX;
+					tackPoint.motionData_.mPos.leg.pos.x = legY;
 
 					tackPoint.motionData_.mPos.body.curveX = (int)bodyCurveX;
 					tackPoint.motionData_.mPos.body.curveY = (int)bodyCurveY;
@@ -234,8 +234,8 @@ namespace NKKD.EDIT
 					// tackPoint.motionData_.mPos.ant.curveX = (int)AntCurveX;
 					// tackPoint.motionData_.mPos.ant.curveY = (int)AntCurveY;
 
-					tackPoint.motionData_.mPos.core.curveX = (int)CoreCurveX;
-					tackPoint.motionData_.mPos.core.curveY = (int)CoreCurveY;
+					tackPoint.motionData_.mPos.arm.curveX = (int)ArmCurveX;
+					tackPoint.motionData_.mPos.leg.curveX = (int)LegCurveX;
 
 				};
 

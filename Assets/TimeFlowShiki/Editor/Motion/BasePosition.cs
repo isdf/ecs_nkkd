@@ -18,7 +18,7 @@ namespace NKKD.EDIT
 		public static readonly int FOOT_Y = 2;
 
 		//デフォで45度斜めを向いてる
-		public static readonly int CORE_ANGLE_MAG = 30;
+		public static readonly int CORE_ANGLE_MAG = 15;
 		public static readonly int CORE_ANGLE = 45;
 
 		public static readonly float CORE_BREAST_SIZE = 4f;

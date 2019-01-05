@@ -16,7 +16,7 @@ namespace NKKD.EDIT
 		const int MAX_POS_Y = 64;
 
 		///<summary>入力イベント</summary>
-		private void HandlingEvent()
+		void HandlingEvent()
 		{
 			//カメラ位置移動
 			MoveCamera();
@@ -73,7 +73,7 @@ namespace NKKD.EDIT
 		}
 
 		///<summary>カメラ視点移動</summary>
-		private void MoveCamera()
+		void MoveCamera()
 		{
 			Event e = Event.current;
 			if (e.button != 2)return;
@@ -91,7 +91,7 @@ namespace NKKD.EDIT
 		}
 
 		///<summary>カメラ倍率変更</summary>
-		private void ChangeCameraMag()
+		void ChangeCameraMag()
 		{
 			Event e = Event.current;
 
@@ -119,7 +119,7 @@ namespace NKKD.EDIT
 		}
 
 		///<summary>右クリックによるメニュー表示</summary>
-		private void ShowMenu(Dictionary<string, OnTrackEvent.EventType> menuItems)
+		void ShowMenu(Dictionary<string, OnTrackEvent.EventType> menuItems)
 		{
 			// right click.	
 			if (IsSelectedParts())return;
@@ -129,7 +129,7 @@ namespace NKKD.EDIT
 			}
 		}
 		///<summary>右クリックメニュー</summary>
-		private void ShowContextMenu(Dictionary<string, OnTrackEvent.EventType> menuItems)
+		void ShowContextMenu(Dictionary<string, OnTrackEvent.EventType> menuItems)
 		{
 			var menu = new GenericMenu();
 			foreach (var key in menuItems.Keys)
@@ -141,7 +141,7 @@ namespace NKKD.EDIT
 		}
 
 		///<summary>システムキー入力</summary>
-		private void SystemKey()
+		void SystemKey()
 		{
 			if (Event.current.type != EventType.KeyDown)return;
 
@@ -171,7 +171,7 @@ namespace NKKD.EDIT
 		}
 
 		///<summary>全パーツ選択</summary>
-		private void SelectPartsAll()
+		void SelectPartsAll()
 		{
 			if (Event.current.type != EventType.KeyDown)
 				return;
@@ -197,7 +197,7 @@ namespace NKKD.EDIT
 		}
 
 		///<summary>左クリックパーツ選択</summary>
-		private void SelectParts()
+		void SelectParts()
 		{
 			if (Event.current.button != 0)
 				return;
@@ -220,17 +220,23 @@ namespace NKKD.EDIT
 					)
 					{
 						partsType = item;
+
+						// Debug.Log(partsType);
 						break;
 					}
 				}
 
+				foreach (enEditPartsType item in Enum.GetValues(typeof(enEditPartsType)))
+					isMultiParts_[item] = false;
+
+				//コア以外
 				foreach (enPartsType item in Enum.GetValues(typeof(enPartsType)))
 				{
 					var editParts = PartsConverter.Convert(item);
-
-					isMultiParts_[editParts] = (partsType == item);
+					isMultiParts_[editParts] |= (partsType == item);
 					multiOffset_[editParts] = Vector2Int.zero;
 				}
+
 				isRepaint_ = true;
 
 				SetupPartsData(true);
@@ -238,7 +244,7 @@ namespace NKKD.EDIT
 		}
 
 		///<summary>キーパーツ選択</summary>
-		private void SelectPartsKey()
+		void SelectPartsKey()
 		{
 
 			if (Event.current.type != EventType.KeyDown)
@@ -334,7 +340,7 @@ namespace NKKD.EDIT
 		//Pos---------------
 
 		///<summary>マウスによる位置移動</summary>
-		private void ChangePos()
+		void ChangePos()
 		{
 			if (Event.current.button != 0)return;
 
@@ -347,56 +353,63 @@ namespace NKKD.EDIT
 				List<Action> cmdDo = new List<Action>();
 				List<Action> cmdUndo = new List<Action>();
 				string id = MethodBase.GetCurrentMethod().Name;
+
+				//コア以外
 				foreach (enPartsType item in Enum.GetValues(typeof(enPartsType)))
 				{
 					var editParts = PartsConverter.Convert(item);
 					if (!isMultiParts_[editParts])
 						continue;
 
-					//コアは後で
-					if (editParts == enEditPartsType.Core)
-						continue;
+					Vector2Int basePos = BasePosition.GetPosEdit(item, false);
+
+					//コアは左右両方でやるとおかしくなるので、片方だけ
+					if ((editParts == enEditPartsType.Arm) || (editParts == enEditPartsType.Leg))
+					{
+						if ((item == enPartsType.RightArm) || (item == enPartsType.RightLeg))
+							continue;
+
+						//基礎位置なし
+						basePos = Vector2Int.zero;
+					}
 
 					Vector2 movePos = new Vector2(
 						mousePos.x - camPos_.x - multiOffset_[editParts].x, -mousePos.y + camPos_.y - multiOffset_[editParts].y);
 					Undo.RecordObject(parent_, "ChangePartsPos");
 
-					// Vector2Int newPos = GetNewPos(item, RoundPosVector(movePos));
-					Vector2Int newPos = RoundPosVector(movePos);
-					// GetNewPos(item, RoundPosVector(movePos));
+					Vector2Int newPos = RoundPosVector(movePos) - basePos;
 					var activeTack = parent_.GetActiveScore().GetActiveTackPoint();
 					var lastPos = activeTack.motionData_.mPos.GetPos(editParts);
-					var partsType = item;
+					var partsType = editParts;
 					id += partsType;
 					//コマンドPos
 					cmdDo.Add(() => activeTack.motionData_.mPos.SetPos(editParts, newPos));
 					cmdUndo.Add(() => activeTack.motionData_.mPos.SetPos(editParts, lastPos));
 				}
 
-				if (isMultiParts_[enEditPartsType.Core])
-				{
-					// Debug.Log("asdf");
-					var editParts = enEditPartsType.Core;
+				// //コア
+				// if (isMultiParts_[enEditPartsType.Core])
+				// {
+				// 	var editParts = enEditPartsType.Core;
 
-					Vector2 movePos = new Vector2(
-						mousePos.x - camPos_.x - multiOffset_[editParts].x, -mousePos.y + camPos_.y - multiOffset_[editParts].y);
-					Undo.RecordObject(parent_, "ChangePartsPos");
+				// 	Vector2 movePos = new Vector2(
+				// 		mousePos.x - camPos_.x - multiOffset_[editParts].x, -mousePos.y + camPos_.y - multiOffset_[editParts].y);
+				// 	Undo.RecordObject(parent_, "ChangePartsPos");
 
-					Vector2Int newPos = RoundPosVector(movePos);
-					Debug.Log(movePos);
-					// GetNewPos(editParts, RoundPosVector(movePos));
-					var activeTack = parent_.GetActiveScore().GetActiveTackPoint();
-					var lastPos = activeTack.motionData_.mPos.GetPos(editParts);
-					// var partsType = item;
-					id += editParts;
-					//コマンドPos
-					cmdDo.Add(() => activeTack.motionData_.mPos.SetPos(editParts, newPos));
-					cmdUndo.Add(() => activeTack.motionData_.mPos.SetPos(editParts, lastPos));
-				}
+				// 	Vector2Int newPos = RoundPosVector(movePos);
+
+				// 	// GetNewPos(editParts, RoundPosVector(movePos));
+				// 	var activeTack = parent_.GetActiveScore().GetActiveTackPoint();
+				// 	var lastPos = activeTack.motionData_.mPos.GetPos(editParts);
+				// 	// var partsType = item;
+				// 	id += editParts;
+				// 	//コマンドPos
+				// 	cmdDo.Add(() => activeTack.motionData_.mPos.SetPos(editParts, newPos));
+				// 	cmdUndo.Add(() => activeTack.motionData_.mPos.SetPos(editParts, lastPos));
+				// }
 
 				if (cmdDo.Any())
 				{
-
 					ARIMotionMainWindow.tackCmd_.Do(new MotionCommand(id,
 						() => { foreach (var cmd in cmdDo)cmd(); },
 						() => { foreach (var cmd in cmdUndo)cmd(); }));
@@ -407,7 +420,7 @@ namespace NKKD.EDIT
 		}
 
 		///<summary>キーによる位置移動</summary>
-		private void ChangePosKey()
+		void ChangePosKey()
 		{
 			if (Event.current.type != EventType.KeyDown)return;
 
@@ -472,7 +485,7 @@ namespace NKKD.EDIT
 		}
 
 		// //アクティブタックの位置変更
-		// private Vector2Int GetNewPos(enEditPartsType partsType, Vector2Int pos)
+		//  Vector2Int GetNewPos(enEditPartsType partsType, Vector2Int pos)
 		// {
 		// 	Vector2Int newPos = Vector2Int.zero;
 		// 	Vector2Int basePos = BasePosition.GetPosEdit(partsType, false);
@@ -488,7 +501,7 @@ namespace NKKD.EDIT
 		// }
 
 		//Transform---------------
-		private void ChangeTransformRotate()
+		void ChangeTransformRotate()
 		{
 			if (Event.current.type != EventType.KeyDown)return;
 
@@ -544,7 +557,7 @@ namespace NKKD.EDIT
 		}
 
 		////パーツ向き
-		//private void ChangeTransformAngle()
+		// void ChangeTransformAngle()
 		//{
 		//	if (Event.current.type != EventType.KeyDown) return;
 
@@ -596,7 +609,7 @@ namespace NKKD.EDIT
 		//}
 
 		////パーツ反転
-		//private void ChangeTransformMirror()
+		// void ChangeTransformMirror()
 		//{
 		//	if (Event.current.type != EventType.KeyDown) return;
 
@@ -640,7 +653,7 @@ namespace NKKD.EDIT
 		//}
 
 		//リセット
-		private void ChangeTransformReset()
+		void ChangeTransformReset()
 		{
 			if (Event.current.type != EventType.KeyDown)return;
 

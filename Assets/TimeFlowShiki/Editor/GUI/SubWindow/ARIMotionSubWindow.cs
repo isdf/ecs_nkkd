@@ -54,7 +54,6 @@ namespace NKKD.EDIT
 		TimelineType timelineType_;
 		Dictionary<enEditPartsType, bool> isMultiParts_ = new Dictionary<enEditPartsType, bool>();
 		Dictionary<enEditPartsType, Vector2Int> multiOffset_ = new Dictionary<enEditPartsType, Vector2Int>();
-
 		string lastTackId_;
 		string lastParentTimelineId_;
 		int selectedFrame_;
