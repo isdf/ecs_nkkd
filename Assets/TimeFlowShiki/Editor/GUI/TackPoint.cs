@@ -16,17 +16,17 @@ namespace NKKD.EDIT
 		public static Action<OnTrackEvent> Emit;
 
 		[SerializeField]
-		private TackPointInspector tackPointInspector_;
+		TackPointInspector tackPointInspector_;
 
 		[SerializeField]
 		public string tackId_;
 		[SerializeField]
 		public string parentTimelineId_;
 		[SerializeField]
-		private int index_;
+		int index_;
 
 		[SerializeField]
-		private bool active_ = false;
+		bool active_ = false;
 		[SerializeField]
 		public bool IsExistTack_ = true;
 
@@ -43,15 +43,15 @@ namespace NKKD.EDIT
 		public MotionData motionData_;
 
 		[SerializeField]
-		private Texture2D tackBackTransparentTex_;
+		Texture2D tackBackTransparentTex_;
 		[SerializeField]
-		private Texture2D tackColorTex_;
+		Texture2D tackColorTex_;
 
-		private Vector2 distance_ = Vector2.zero;
-		private int lastStart_;
-		private int lastSpan_;
+		Vector2 distance_ = Vector2.zero;
+		int lastStart_;
+		int lastSpan_;
 
-		private enum TackModifyMode : int
+		enum TackModifyMode : int
 		{
 			NONE,
 			GRAB_BODY,
@@ -59,10 +59,10 @@ namespace NKKD.EDIT
 			DRAG_BODY,
 			DRAG_END,
 		}
-		private TackModifyMode mode_ = TackModifyMode.NONE;
+		TackModifyMode mode_ = TackModifyMode.NONE;
 
-		private Vector2 dragBeginPoint_;
-		private GUIStyle labelStyle_;
+		Vector2 dragBeginPoint_;
+		GUIStyle labelStyle_;
 
 		public TackPoint()
 		{
@@ -394,7 +394,7 @@ namespace NKKD.EDIT
 			Emit(new OnTrackEvent(OnTrackEvent.EventType.EVENT_TACK_SAVE, this.tackId_, start_));
 		}
 
-		private void ShowContextMenu()
+		void ShowContextMenu()
 		{
 			var framePoint = start_;
 			var menu = new GenericMenu();
@@ -419,7 +419,7 @@ namespace NKKD.EDIT
 			menu.ShowAsContext();
 		}
 
-		private void GenerateTextureFromBaseTexture(Texture2D baseTex, int index)
+		void GenerateTextureFromBaseTexture(Texture2D baseTex, int index)
 		{
 			var samplingColor = baseTex.GetPixels()[0];
 			var rgbVector = new Vector3(samplingColor.r, samplingColor.g, samplingColor.b);
@@ -437,7 +437,7 @@ namespace NKKD.EDIT
 			tackColorTex_.Apply();
 		}
 
-		private Rect DrawTackPointInRect(float startX, float startY)
+		Rect DrawTackPointInRect(float startX, float startY)
 		{
 			var tackStartPointX = startX + (start_ * WindowSettings.TACK_FRAME_WIDTH);
 			var end = start_ + span_ - 1;
@@ -515,7 +515,7 @@ namespace NKKD.EDIT
 		}
 
 		//�}�E�X�����ꂽ�u��
-		private bool BeginTackModify(Rect tackBGRect, Vector2 beginPoint)
+		bool BeginTackModify(Rect tackBGRect, Vector2 beginPoint)
 		{
 
 			switch (Event.current.type)
@@ -556,7 +556,7 @@ namespace NKKD.EDIT
 		}
 
 		//�h���b�O���n�߂��u��
-		private bool RecognizeTackModify(Vector2 mousePos)
+		bool RecognizeTackModify(Vector2 mousePos)
 		{
 
 			switch (Event.current.type)
@@ -607,7 +607,7 @@ namespace NKKD.EDIT
 		}
 
 		//�}�E�X���ړ����邽��
-		private bool UpdateTackModify(Rect limitRect, Rect tackBGRect, Vector2 draggingPoint)
+		bool UpdateTackModify(Rect limitRect, Rect tackBGRect, Vector2 draggingPoint)
 		{
 			//�}�E�X�����ꂽ�Ƃ��i�g����O�ꂽ�j
 			if (!limitRect.Contains(draggingPoint))
@@ -675,7 +675,7 @@ namespace NKKD.EDIT
 		}
 
 		//�}�E�X�����ꂽ�Ƃ�
-		private void ExitUpdate(Vector2 currentDistance)
+		void ExitUpdate(Vector2 currentDistance)
 		{
 			var distanceToFrame = DistanceToFrame(currentDistance.x);
 
@@ -736,7 +736,7 @@ namespace NKKD.EDIT
 			distance_ = Vector2.zero;
 		}
 
-		private int DistanceToFrame(float distX)
+		int DistanceToFrame(float distX)
 		{
 			var distanceToFrame = (int)(distX / WindowSettings.TACK_FRAME_WIDTH);
 			var distanceDelta = distX % WindowSettings.TACK_FRAME_WIDTH;
@@ -748,12 +748,12 @@ namespace NKKD.EDIT
 			return distanceToFrame;
 		}
 
-		private float FrameToDistance(int frame)
+		float FrameToDistance(int frame)
 		{
 			return WindowSettings.TACK_FRAME_WIDTH * frame;
 		}
 
-		private void DrawTackPoint(int frame, float pointX, float pointY)
+		void DrawTackPoint(int frame, float pointX, float pointY)
 		{
 			if (span_ == 1)
 			{
